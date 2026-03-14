@@ -615,6 +615,72 @@ export type Database = {
           },
         ]
       }
+      platform_documents: {
+        Row: {
+          access_level: string | null
+          associated_form: string | null
+          category: string | null
+          cover_path: string | null
+          cover_url: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          download_count: number | null
+          file_path: string | null
+          file_size: number | null
+          file_type: string | null
+          file_url: string | null
+          id: string
+          is_active: boolean | null
+          requires_login: boolean | null
+          target_audience: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          access_level?: string | null
+          associated_form?: string | null
+          category?: string | null
+          cover_path?: string | null
+          cover_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          download_count?: number | null
+          file_path?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          requires_login?: boolean | null
+          target_audience?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          access_level?: string | null
+          associated_form?: string | null
+          category?: string | null
+          cover_path?: string | null
+          cover_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          download_count?: number | null
+          file_path?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          requires_login?: boolean | null
+          target_audience?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       platform_settings: {
         Row: {
           category: string | null
