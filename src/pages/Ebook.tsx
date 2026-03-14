@@ -36,16 +36,16 @@ const Ebook = () => {
   const [unlocked, setUnlocked] = useState(false);
   const [downloadCount, setDownloadCount] = useState(0);
   const [showShare, setShowShare] = useState(false);
+  const [docRecord, setDocRecord] = useState<any>(null);
 
   useEffect(() => {
     document.title = "E-book : 50 Opportunités d'Investissement | MIPROJET";
-    // Set OG meta tags
     setMetaTag("og:title", "50 Opportunités d'Investissement Rentables en Côte d'Ivoire");
     setMetaTag("og:description", "Découvrez notre sélection exclusive de projets d'investissement analysés et structurés par les experts de MIPROJET.");
     setMetaTag("og:image", window.location.origin + ebookCover);
     setMetaTag("og:url", window.location.href);
     setMetaTag("og:type", "article");
-    fetchDownloadCount();
+    fetchDocumentRecord();
   }, []);
 
   const setMetaTag = (property: string, content: string) => {
@@ -54,10 +54,26 @@ const Ebook = () => {
     meta.content = content;
   };
 
-  const fetchDownloadCount = async () => {
-    const { count } = await supabase.from("leads" as any).select("*", { count: "exact", head: true }).eq("lead_source", "ebook");
-    if (count) setDownloadCount(count);
+  const fetchDocumentRecord = async () => {
+    // Try to find the document in platform_documents
+    const { data } = await supabase
+      .from('platform_documents')
+      .select('*')
+      .ilike('title', '%50 Opportun%')
+      .eq('is_active', true)
+      .limit(1);
+
+    if (data && data.length > 0) {
+      setDocRecord(data[0]);
+      setDownloadCount((data[0] as any).download_count || 0);
+    } else {
+      // Fallback: count from leads
+      const { count } = await supabase.from("leads" as any).select("*", { count: "exact", head: true }).eq("lead_source", "ebook");
+      if (count) setDownloadCount(count);
+    }
   };
+
+  const pdfUrl = docRecord?.file_url || "/50_Opportunités_d'Investissement_Rentables_en_Côte_d'Ivoire.pdf";
 
   const handleDownloadSuccess = () => {
     setShowForm(false);
