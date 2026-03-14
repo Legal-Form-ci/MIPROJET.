@@ -34,6 +34,7 @@ import { AdminOpportunitiesManager } from "@/components/admin/AdminOpportunities
 import { AdminSubscriptionsManager } from "@/components/admin/AdminSubscriptionsManager";
 import { EmailTemplateManager } from "@/components/admin/EmailTemplateManager";
 import { AdminLeadsManager } from "@/components/admin/AdminLeadsManager";
+import { AdminDocumentsManager } from "@/components/admin/AdminDocumentsManager";
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading, adminChecked, signOut } = useAuth();
