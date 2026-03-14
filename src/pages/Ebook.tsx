@@ -79,7 +79,14 @@ const Ebook = () => {
     setShowForm(false);
     setUnlocked(true);
     setDownloadCount(prev => prev + 1);
-    window.open("/documents/50-opportunites-investissement.pdf", "_blank");
+    window.open(pdfUrl, "_blank");
+    // Update download count in DB
+    if (docRecord) {
+      supabase.from('platform_documents')
+        .update({ download_count: (docRecord.download_count || 0) + 1 } as any)
+        .eq('id', docRecord.id)
+        .then();
+    }
   };
 
   return (
