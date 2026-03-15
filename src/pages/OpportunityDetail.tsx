@@ -54,6 +54,22 @@ const OpportunityDetail = () => {
   useEffect(() => {
     if (opportunity) {
       document.title = `${opportunity.title} | MIPROJET`;
+      const setMeta = (attr: string, key: string, content: string) => {
+        let el = document.querySelector(`meta[${attr}="${key}"]`) as HTMLMetaElement | null;
+        if (!el) { el = document.createElement("meta"); el.setAttribute(attr, key); document.head.appendChild(el); }
+        el.content = content;
+      };
+      const desc = opportunity.description || opportunity.content?.substring(0, 160) || "";
+      const img = opportunity.image_url || window.location.origin + "/favicon.png";
+      setMeta("property", "og:title", opportunity.title);
+      setMeta("property", "og:description", desc);
+      setMeta("property", "og:image", img);
+      setMeta("property", "og:url", window.location.href);
+      setMeta("property", "og:type", "article");
+      setMeta("name", "twitter:card", "summary_large_image");
+      setMeta("name", "twitter:title", opportunity.title);
+      setMeta("name", "twitter:description", desc);
+      setMeta("name", "twitter:image", img);
     }
   }, [opportunity]);
 
