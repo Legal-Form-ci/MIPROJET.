@@ -224,6 +224,7 @@ export const Navigation = () => {
                 <Link to="/investors" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>💼 Espace Investisseurs</Link>
                 <Link to="/opportunities" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>🎯 Opportunités</Link>
                 <Link to="/ebook" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>📕 Guide : 50 Opportunités</Link>
+                <Link to="/documents" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>📚 Documents & Ressources</Link>
               </div>
             )}
 

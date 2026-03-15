@@ -100,6 +100,29 @@ export const LeadCaptureForm = ({
       wants_foundation_participation: form.wants_foundation_participation,
     }]);
 
+    // Send confirmation email with download link
+    if (!error && sourceId) {
+      try {
+        const { data: docData } = await supabase
+          .from('platform_documents')
+          .select('title, file_url')
+          .eq('id', sourceId)
+          .single();
+        if (docData?.file_url) {
+          await supabase.functions.invoke('send-lead-confirmation', {
+            body: {
+              email: form.email,
+              firstName: form.first_name,
+              documentTitle: docData.title,
+              downloadUrl: docData.file_url,
+            }
+          });
+        }
+      } catch (emailErr) {
+        console.error('Email confirmation error:', emailErr);
+      }
+    }
+
     setLoading(false);
     if (error) {
       toast({ title: "Erreur", description: "Impossible d'enregistrer vos informations", variant: "destructive" });
