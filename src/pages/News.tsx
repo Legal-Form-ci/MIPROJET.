@@ -65,6 +65,17 @@ const News = () => {
 
   useEffect(() => {
     document.title = `${t('news.pageTitle')} | MIPROJET`;
+    const setMeta = (attr: string, key: string, content: string) => {
+      let el = document.querySelector(`meta[${attr}="${key}"]`) as HTMLMetaElement | null;
+      if (!el) { el = document.createElement("meta"); el.setAttribute(attr, key); document.head.appendChild(el); }
+      el.content = content;
+    };
+    setMeta("name", "description", "Suivez les dernières actualités de MIPROJET : événements, partenariats, formations et opportunités en Afrique.");
+    setMeta("property", "og:title", t('news.pageTitle'));
+    setMeta("property", "og:description", "Suivez les dernières actualités de MIPROJET");
+    setMeta("property", "og:type", "website");
+    setMeta("property", "og:image", window.location.origin + "/favicon.png");
+    setMeta("name", "twitter:card", "summary_large_image");
     fetchNews();
   }, []);
 
