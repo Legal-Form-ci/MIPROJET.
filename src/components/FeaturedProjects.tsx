@@ -1,18 +1,34 @@
+import { useState, useEffect } from "react";
 import { ProjectCard } from "./ProjectCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { supabase } from "@/integrations/supabase/client";
 import projectPoultryFarm from "@/assets/project-poultry-farm.jpg";
 import projectDigitalTraining from "@/assets/project-digital-training.jpg";
 import projectOrganicFarming from "@/assets/project-organic-farming.jpg";
 
-// Projets réalistes d'Afrique de l'Ouest avec images AI authentiques
-const projects = [
+interface DBProject {
+  id: string;
+  title: string;
+  description: string | null;
+  category: string | null;
+  city: string | null;
+  country: string | null;
+  status: string | null;
+  risk_score: string | null;
+  image_url: string | null;
+  sector: string | null;
+}
+
+const fallbackImages = [projectPoultryFarm, projectDigitalTraining, projectOrganicFarming];
+
+const fallbackProjects = [
   {
     title: "Ferme Avicole Moderne de Tiassalé",
-    description: "Élevage de poulets de chair et poules pondeuses avec 50,000 sujets. Production d'œufs et viande de qualité pour le marché ivoirien. Utilisation de techniques modernes d'élevage durable.",
+    description: "Élevage de poulets de chair et poules pondeuses avec 50,000 sujets. Production d'œufs et viande de qualité pour le marché ivoirien.",
     category: "Agriculture",
     location: "Tiassalé, Côte d'Ivoire",
     fundingType: "Investissement en capital",
@@ -22,7 +38,7 @@ const projects = [
   },
   {
     title: "Centre Numérique de Formation Lomé",
-    description: "Formation de 500 jeunes par an en développement web, design graphique et marketing digital. Partenariats avec des entreprises tech locales pour l'insertion professionnelle.",
+    description: "Formation de 500 jeunes par an en développement web, design graphique et marketing digital.",
     category: "Éducation & Formation",
     location: "Lomé, Togo",
     fundingType: "Subvention & Partenariat",
@@ -32,7 +48,7 @@ const projects = [
   },
   {
     title: "Coopérative Agricole Bio du Sine-Saloum",
-    description: "Regroupement de 200 agriculteurs biologiques produisant riz, mil, arachide et légumes. Certification bio et exportation vers l'Europe. Irrigation solaire et conservation des sols.",
+    description: "Regroupement de 200 agriculteurs biologiques produisant riz, mil, arachide et légumes.",
     category: "Agriculture Bio",
     location: "Kaolack, Sénégal",
     fundingType: "Financement Mixte",
@@ -44,6 +60,40 @@ const projects = [
 
 export const FeaturedProjects = () => {
   const { t } = useLanguage();
+  const [dbProjects, setDbProjects] = useState<DBProject[]>([]);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const { data } = await supabase
+        .from("projects")
+        .select("id, title, description, category, city, country, status, risk_score, image_url, sector")
+        .eq("status", "published")
+        .order("created_at", { ascending: false })
+        .limit(3);
+      if (data && data.length > 0) setDbProjects(data);
+    };
+    fetchProjects();
+  }, []);
+
+  const statusMap: Record<string, "in_structuring" | "validated" | "oriented"> = {
+    published: "validated",
+    in_progress: "in_structuring",
+    completed: "oriented",
+    draft: "in_structuring",
+  };
+
+  const projects = dbProjects.length > 0
+    ? dbProjects.map((p, i) => ({
+        title: p.title,
+        description: p.description || "",
+        category: p.category || p.sector || "Projet",
+        location: [p.city, p.country].filter(Boolean).join(", ") || "Afrique",
+        fundingType: "Investissement",
+        status: statusMap[p.status || "published"] || "validated",
+        score: (p.risk_score as "A" | "B" | "C" | "D") || "B",
+        image: p.image_url || fallbackImages[i % fallbackImages.length],
+      }))
+    : fallbackProjects;
 
   return (
     <section className="py-16 sm:py-24 bg-background">
@@ -63,7 +113,6 @@ export const FeaturedProjects = () => {
           ))}
         </div>
 
-        {/* Important Notice */}
         <Alert className="mt-8 sm:mt-12 bg-primary/5 border-primary/20">
           <AlertCircle className="h-4 w-4 text-primary" />
           <AlertTitle className="text-sm sm:text-base text-foreground">{t('projects.notice.title')}</AlertTitle>

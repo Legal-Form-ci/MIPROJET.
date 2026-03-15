@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LeadCaptureForm } from "@/components/LeadCaptureForm";
 import { SocialSharePopup } from "@/components/SocialSharePopup";
-import ebookCover from "@/assets/ebook-cover.jpg";
+import ebookCover from "@/assets/ebook-cover-new.png";
 import {
   BookOpen, Download, CheckCircle, TrendingUp, Shield,
   Users, Lightbulb, Share2, Eye
