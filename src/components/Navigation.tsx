@@ -89,6 +89,7 @@ export const Navigation = () => {
                       <li><NavigationMenuLink asChild><Link to="/investors" className="block p-2 rounded-md hover:bg-muted text-sm">💼 Espace Investisseurs</Link></NavigationMenuLink></li>
                       <li><NavigationMenuLink asChild><Link to="/opportunities" className="block p-2 rounded-md hover:bg-muted text-sm">🎯 Opportunités</Link></NavigationMenuLink></li>
                       <li><NavigationMenuLink asChild><Link to="/ebook" className="block p-2 rounded-md hover:bg-muted text-sm">📕 Guide : 50 Opportunités</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/documents" className="block p-2 rounded-md hover:bg-muted text-sm">📚 Documents & Ressources</Link></NavigationMenuLink></li>
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
@@ -223,6 +224,7 @@ export const Navigation = () => {
                 <Link to="/investors" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>💼 Espace Investisseurs</Link>
                 <Link to="/opportunities" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>🎯 Opportunités</Link>
                 <Link to="/ebook" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>📕 Guide : 50 Opportunités</Link>
+                <Link to="/documents" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>📚 Documents & Ressources</Link>
               </div>
             )}
 

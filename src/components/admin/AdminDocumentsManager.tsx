@@ -420,6 +420,12 @@ export const AdminDocumentsManager = () => {
             {/* Cover Image */}
             <div className="space-y-2">
               <Label>Page de couverture (optionnel)</Label>
+              {editingId && documents.find(d => d.id === editingId)?.cover_url && (
+                <div className="flex items-center gap-3 mb-2">
+                  <img src={documents.find(d => d.id === editingId)!.cover_url!} alt="Couverture actuelle" className="h-20 w-16 object-cover rounded border" />
+                  <span className="text-xs text-muted-foreground">Couverture actuelle — uploadez une nouvelle image pour la remplacer</span>
+                </div>
+              )}
               <Input type="file" accept="image/*" onChange={e => setCoverFile(e.target.files?.[0] || null)} />
             </div>
 
