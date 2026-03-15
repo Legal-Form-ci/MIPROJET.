@@ -35,6 +35,7 @@ import { AdminSubscriptionsManager } from "@/components/admin/AdminSubscriptions
 import { EmailTemplateManager } from "@/components/admin/EmailTemplateManager";
 import { AdminLeadsManager } from "@/components/admin/AdminLeadsManager";
 import { AdminDocumentsManager } from "@/components/admin/AdminDocumentsManager";
+import { AdminFirecrawlScraper } from "@/components/admin/AdminFirecrawlScraper";
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading, adminChecked, signOut } = useAuth();
@@ -206,7 +207,18 @@ const AdminDashboard = () => {
             </TabsContent>
             
             <TabsContent value="opportunities" className="space-y-6">
-              <AdminOpportunitiesManager />
+              <Tabs defaultValue="list">
+                <TabsList>
+                  <TabsTrigger value="list">Gérer les opportunités</TabsTrigger>
+                  <TabsTrigger value="scraper">🌐 Scraper Web (Firecrawl)</TabsTrigger>
+                </TabsList>
+                <TabsContent value="list" className="pt-4">
+                  <AdminOpportunitiesManager />
+                </TabsContent>
+                <TabsContent value="scraper" className="pt-4">
+                  <AdminFirecrawlScraper />
+                </TabsContent>
+              </Tabs>
             </TabsContent>
 
             <TabsContent value="leads" className="space-y-6">

@@ -65,16 +65,41 @@ const News = () => {
 
   useEffect(() => {
     document.title = `${t('news.pageTitle')} | MIPROJET`;
+    const setMeta = (attr: string, key: string, content: string) => {
+      let el = document.querySelector(`meta[${attr}="${key}"]`) as HTMLMetaElement | null;
+      if (!el) { el = document.createElement("meta"); el.setAttribute(attr, key); document.head.appendChild(el); }
+      el.content = content;
+    };
+    setMeta("name", "description", "Suivez les dernières actualités de MIPROJET : événements, partenariats, formations et opportunités en Afrique.");
+    setMeta("property", "og:title", t('news.pageTitle'));
+    setMeta("property", "og:description", "Suivez les dernières actualités de MIPROJET");
+    setMeta("property", "og:type", "website");
+    setMeta("property", "og:image", window.location.origin + "/favicon.png");
+    setMeta("name", "twitter:card", "summary_large_image");
     fetchNews();
   }, []);
 
   useEffect(() => {
-    // If there's an ID in URL, load that specific news
     if (id && news.length > 0) {
       const found = news.find(n => n.id === id);
       if (found) {
         setSelectedNews(found);
-        // Increment view count
+        // Update OG tags for social sharing
+        document.title = `${found.title} | MIPROJET`;
+        const setMeta = (attr: string, key: string, content: string) => {
+          let el = document.querySelector(`meta[${attr}="${key}"]`) as HTMLMetaElement | null;
+          if (!el) { el = document.createElement("meta"); el.setAttribute(attr, key); document.head.appendChild(el); }
+          el.content = content;
+        };
+        setMeta("property", "og:title", found.title);
+        setMeta("property", "og:description", found.excerpt || found.content.substring(0, 160));
+        setMeta("property", "og:image", found.image_url || window.location.origin + "/favicon.png");
+        setMeta("property", "og:url", window.location.href);
+        setMeta("property", "og:type", "article");
+        setMeta("name", "twitter:card", "summary_large_image");
+        setMeta("name", "twitter:title", found.title);
+        setMeta("name", "twitter:description", found.excerpt || found.content.substring(0, 160));
+        setMeta("name", "twitter:image", found.image_url || window.location.origin + "/favicon.png");
         supabase.from('news').update({ views_count: (found.views_count || 0) + 1 }).eq('id', id);
       }
     }

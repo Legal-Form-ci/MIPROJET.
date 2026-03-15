@@ -1,11 +1,32 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, TrendingUp, Users, Shield, CheckCircle } from "lucide-react";
+import { ArrowRight, TrendingUp, Users, Shield, CheckCircle, Newspaper } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import heroImage from "@/assets/hero-collaboration.jpg";
+
+interface NewsItem {
+  id: string;
+  title: string;
+}
 
 export const Hero = () => {
   const { t } = useLanguage();
+  const [latestNews, setLatestNews] = useState<NewsItem[]>([]);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      const { data } = await supabase
+        .from("news")
+        .select("id, title")
+        .eq("status", "published")
+        .order("published_at", { ascending: false })
+        .limit(3);
+      if (data) setLatestNews(data);
+    };
+    fetchNews();
+  }, []);
 
   const highlights = [
     t('hero.highlight1'),
@@ -20,6 +41,23 @@ export const Hero = () => {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left Content */}
           <div className="space-y-6 sm:space-y-8 text-primary-foreground text-center lg:text-left">
+            {/* News Ticker */}
+            {latestNews.length > 0 && (
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+                <div className="flex items-center gap-2 mb-1">
+                  <Newspaper className="h-4 w-4 text-accent flex-shrink-0" />
+                  <span className="text-xs font-semibold text-accent uppercase">Actualités</span>
+                </div>
+                <div className="space-y-1">
+                  {latestNews.map((n) => (
+                    <Link key={n.id} to={`/news/${n.id}`} className="block text-sm text-white/90 hover:text-accent transition-colors truncate">
+                      → {n.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Title */}
             <div className="space-y-4">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white">
@@ -99,7 +137,6 @@ export const Hero = () => {
                 loading="eager"
               />
             </div>
-            {/* Floating Cards */}
             <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-xl animate-fade-in">
               <p className="text-sm text-muted-foreground">{t('hero.qualityLabel')}</p>
               <p className="text-2xl font-bold text-primary">Score A</p>

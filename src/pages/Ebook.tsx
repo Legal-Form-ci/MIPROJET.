@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LeadCaptureForm } from "@/components/LeadCaptureForm";
 import { SocialSharePopup } from "@/components/SocialSharePopup";
-import ebookCover from "@/assets/ebook-cover.jpg";
+import ebookCover from "@/assets/ebook-cover-new.png";
 import {
   BookOpen, Download, CheckCircle, TrendingUp, Shield,
   Users, Lightbulb, Share2, Eye
@@ -40,19 +40,33 @@ const Ebook = () => {
 
   useEffect(() => {
     document.title = "E-book : 50 Opportunités d'Investissement | MIPROJET";
-    setMetaTag("og:title", "50 Opportunités d'Investissement Rentables en Côte d'Ivoire");
-    setMetaTag("og:description", "Découvrez notre sélection exclusive de projets d'investissement analysés et structurés par les experts de MIPROJET.");
-    setMetaTag("og:image", window.location.origin + ebookCover);
+    const setMetaTag = (property: string, content: string) => {
+      let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement | null;
+      if (!meta) { meta = document.createElement("meta"); meta.setAttribute("property", property); document.head.appendChild(meta); }
+      meta.content = content;
+    };
+    const setNameTag = (name: string, content: string) => {
+      let meta = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement | null;
+      if (!meta) { meta = document.createElement("meta"); meta.setAttribute("name", name); document.head.appendChild(meta); }
+      meta.content = content;
+    };
+    const ogTitle = "50 Opportunités d'Investissement Rentables en Côte d'Ivoire";
+    const ogDesc = "Découvrez notre sélection exclusive de projets d'investissement analysés et structurés par les experts de MIPROJET. Guide gratuit.";
+    const ogImage = window.location.origin + ebookCover;
+    setMetaTag("og:title", ogTitle);
+    setMetaTag("og:description", ogDesc);
+    setMetaTag("og:image", ogImage);
     setMetaTag("og:url", window.location.href);
     setMetaTag("og:type", "article");
+    setMetaTag("og:site_name", "MIPROJET");
+    setNameTag("twitter:card", "summary_large_image");
+    setNameTag("twitter:title", ogTitle);
+    setNameTag("twitter:description", ogDesc);
+    setNameTag("twitter:image", ogImage);
+    setNameTag("description", ogDesc);
     fetchDocumentRecord();
   }, []);
 
-  const setMetaTag = (property: string, content: string) => {
-    let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement | null;
-    if (!meta) { meta = document.createElement("meta"); meta.setAttribute("property", property); document.head.appendChild(meta); }
-    meta.content = content;
-  };
 
   const fetchDocumentRecord = async () => {
     // Try to find the document in platform_documents

@@ -147,11 +147,6 @@ const App = () => (
                 <IncubationProgram />
               </Suspense>
             } />
-            <Route path="/incubation" element={
-              <Suspense fallback={<PageLoader />}>
-                <IncubationProgram />
-              </Suspense>
-            } />
             <Route path="/ebook" element={
               <Suspense fallback={<PageLoader />}>
                 <Ebook />
