@@ -272,7 +272,6 @@ const Projects = () => {
                     image={project.image_url || `https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=600&h=400&fit=crop`}
                   />
                 ))}
-                ))}
               </div>
             )}
 
