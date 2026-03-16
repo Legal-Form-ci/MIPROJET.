@@ -128,7 +128,7 @@ export const Hero = () => {
           </div>
 
           {/* Right Image */}
-          <div className="relative hidden lg:block">
+          <div className="relative hidden lg:flex justify-center">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img
                 src={heroImage}
