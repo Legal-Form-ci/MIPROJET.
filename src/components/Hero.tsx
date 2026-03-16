@@ -83,7 +83,7 @@ export const Hero = () => {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 sm:gap-8 py-6 border-t border-b border-white/20">
+            <div className="grid grid-cols-3 gap-3 sm:gap-8 py-4 sm:py-6 border-t border-b border-white/20">
               <div className="text-center lg:text-left">
                 <div className="flex items-center gap-2 justify-center lg:justify-start mb-1">
                   <TrendingUp className="h-5 w-5 text-accent" />
