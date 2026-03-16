@@ -241,6 +241,7 @@ const Ebook = () => {
         title="50 Opportunités d'Investissement Rentables en Côte d'Ivoire"
         description="Découvrez notre sélection exclusive de projets d'investissement analysés par MIPROJET."
         imageUrl={window.location.origin + ebookCover}
+        cta="Télécharger le guide gratuit sur MIPROJET"
       />
     </div>
   );
