@@ -25,39 +25,6 @@ interface DBProject {
 
 const fallbackImages = [projectPoultryFarm, projectDigitalTraining, projectOrganicFarming];
 
-const fallbackProjects = [
-  {
-    title: "Ferme Avicole Moderne de Tiassalé",
-    description: "Élevage de poulets de chair et poules pondeuses avec 50,000 sujets. Production d'œufs et viande de qualité pour le marché ivoirien.",
-    category: "Agriculture",
-    location: "Tiassalé, Côte d'Ivoire",
-    fundingType: "Investissement en capital",
-    status: "validated" as const,
-    score: "A" as const,
-    image: projectPoultryFarm,
-  },
-  {
-    title: "Centre Numérique de Formation Lomé",
-    description: "Formation de 500 jeunes par an en développement web, design graphique et marketing digital.",
-    category: "Éducation & Formation",
-    location: "Lomé, Togo",
-    fundingType: "Subvention & Partenariat",
-    status: "in_structuring" as const,
-    score: "B" as const,
-    image: projectDigitalTraining,
-  },
-  {
-    title: "Coopérative Agricole Bio du Sine-Saloum",
-    description: "Regroupement de 200 agriculteurs biologiques produisant riz, mil, arachide et légumes.",
-    category: "Agriculture Bio",
-    location: "Kaolack, Sénégal",
-    fundingType: "Financement Mixte",
-    status: "oriented" as const,
-    score: "A" as const,
-    image: projectOrganicFarming,
-  },
-];
-
 export const FeaturedProjects = () => {
   const { t } = useLanguage();
   const [dbProjects, setDbProjects] = useState<DBProject[]>([]);
@@ -70,7 +37,7 @@ export const FeaturedProjects = () => {
         .eq("status", "published")
         .order("created_at", { ascending: false })
         .limit(3);
-      if (data && data.length > 0) setDbProjects(data);
+      if (data) setDbProjects(data);
     };
     fetchProjects();
   }, []);
@@ -84,6 +51,7 @@ export const FeaturedProjects = () => {
 
   const projects = dbProjects.length > 0
     ? dbProjects.map((p, i) => ({
+        id: p.id,
         title: p.title,
         description: p.description || "",
         category: p.category || p.sector || "Projet",
@@ -93,7 +61,41 @@ export const FeaturedProjects = () => {
         score: (p.risk_score as "A" | "B" | "C" | "D") || "B",
         image: p.image_url || fallbackImages[i % fallbackImages.length],
       }))
-    : fallbackProjects;
+    : [
+        {
+          id: undefined as string | undefined,
+          title: "Ferme Avicole Moderne de Tiassalé",
+          description: "Élevage de poulets de chair et poules pondeuses avec 50,000 sujets.",
+          category: "Agriculture",
+          location: "Tiassalé, Côte d'Ivoire",
+          fundingType: "Investissement en capital",
+          status: "validated" as const,
+          score: "A" as const,
+          image: projectPoultryFarm,
+        },
+        {
+          id: undefined as string | undefined,
+          title: "Centre Numérique de Formation Lomé",
+          description: "Formation de 500 jeunes par an en développement web et marketing digital.",
+          category: "Éducation & Formation",
+          location: "Lomé, Togo",
+          fundingType: "Subvention & Partenariat",
+          status: "in_structuring" as const,
+          score: "B" as const,
+          image: projectDigitalTraining,
+        },
+        {
+          id: undefined as string | undefined,
+          title: "Coopérative Agricole Bio du Sine-Saloum",
+          description: "Regroupement de 200 agriculteurs biologiques produisant riz, mil et légumes.",
+          category: "Agriculture Bio",
+          location: "Kaolack, Sénégal",
+          fundingType: "Financement Mixte",
+          status: "oriented" as const,
+          score: "A" as const,
+          image: projectOrganicFarming,
+        },
+      ];
 
   return (
     <section className="py-16 sm:py-24 bg-background">
