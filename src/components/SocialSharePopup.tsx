@@ -11,49 +11,63 @@ interface SocialSharePopupProps {
   description: string;
   imageUrl?: string;
   cta?: string;
+  shareType?: "news" | "opportunity" | "project" | "document" | "ebook";
+  shareId?: string;
+}
+
+const SITE_URL = "https://miprojet.agricapital.ci";
+
+function getShareUrl(props: SocialSharePopupProps): string {
+  // Use /share/:type/:id for social crawlers to get proper OG tags
+  if (props.shareType && props.shareId) {
+    return `${SITE_URL}/share/${props.shareType}/${props.shareId}`;
+  }
+  return props.url;
 }
 
 const platforms = [
   {
     name: "Facebook",
     icon: "📘",
-    getUrl: (url: string) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+    getUrl: (shareUrl: string) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
   },
   {
     name: "WhatsApp",
     icon: "💬",
-    getUrl: (url: string, title: string, desc: string, cta: string) =>
-      `https://wa.me/?text=${encodeURIComponent(`*${title}*\n\n${desc}\n\n👉 ${cta}\n${url}\n\n— MIPROJET | Structuration • Financement • Incubation`)}`,
+    getUrl: (shareUrl: string, title: string, desc: string, cta: string) =>
+      `https://wa.me/?text=${encodeURIComponent(`*${title}*\n\n${desc}\n\n👉 ${cta}\n${shareUrl}\n\n— MIPROJET | Structuration • Financement • Incubation`)}`,
   },
   {
     name: "LinkedIn",
     icon: "💼",
-    getUrl: (url: string) =>
-      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+    getUrl: (shareUrl: string) =>
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
   },
   {
     name: "Twitter / X",
     icon: "🐦",
-    getUrl: (url: string, title: string, desc: string, cta: string) =>
-      `https://twitter.com/intent/tweet?text=${encodeURIComponent(`${title}\n\n${desc.substring(0, 100)}...\n\n👉 ${cta}`)}&url=${encodeURIComponent(url)}`,
+    getUrl: (shareUrl: string, title: string, desc: string, cta: string) =>
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(`${title}\n\n${desc.substring(0, 100)}...\n\n👉 ${cta}`)}&url=${encodeURIComponent(shareUrl)}`,
   },
   {
     name: "Telegram",
     icon: "✈️",
-    getUrl: (url: string, title: string, desc: string, cta: string) =>
-      `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(`*${title}*\n\n${desc.substring(0, 120)}...\n\n👉 ${cta}`)}`,
+    getUrl: (shareUrl: string, title: string, desc: string, cta: string) =>
+      `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`*${title}*\n\n${desc.substring(0, 120)}...\n\n👉 ${cta}`)}`,
   },
 ];
 
-export const SocialSharePopup = ({ open, onClose, url, title, description, imageUrl, cta = "Découvrir sur MIPROJET" }: SocialSharePopupProps) => {
+export const SocialSharePopup = (props: SocialSharePopupProps) => {
+  const { open, onClose, title, description, cta = "Découvrir sur MIPROJET" } = props;
   const { toast } = useToast();
+  const shareUrl = getShareUrl(props);
 
   const handleShare = (platform: typeof platforms[0]) => {
-    window.open(platform.getUrl(url, title, description, cta), "_blank", "width=600,height=400");
+    window.open(platform.getUrl(shareUrl, title, description, cta), "_blank", "width=600,height=400");
   };
 
   const copyLink = () => {
-    const shareText = `${title}\n\n${description.substring(0, 150)}...\n\n👉 ${cta}\n${url}`;
+    const shareText = `${title}\n\n${description.substring(0, 150)}...\n\n👉 ${cta}\n${shareUrl}`;
     navigator.clipboard.writeText(shareText);
     toast({ title: "Copié !", description: "Le texte de partage a été copié dans le presse-papiers." });
   };
