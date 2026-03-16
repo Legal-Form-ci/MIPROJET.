@@ -107,8 +107,7 @@ export const Navigation = () => {
                   <NavigationMenuContent>
                     <ul className="grid w-[280px] gap-1 p-2">
                       <li><NavigationMenuLink asChild><Link to="/documents" className="block p-2 rounded-md hover:bg-muted text-sm">📚 Documents & Guides</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/news" className="block p-2 rounded-md hover:bg-muted text-sm">📰 Actualités</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/blog" className="block p-2 rounded-md hover:bg-muted text-sm">📝 Blog</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/news" className="block p-2 rounded-md hover:bg-muted text-sm">📰 Actualités & Blog</Link></NavigationMenuLink></li>
                       <li><NavigationMenuLink asChild><Link to="/forum" className="block p-2 rounded-md hover:bg-muted text-sm">💬 Forum</Link></NavigationMenuLink></li>
                       <li><NavigationMenuLink asChild><Link to="/success-stories" className="block p-2 rounded-md hover:bg-muted text-sm">🏆 Témoignages</Link></NavigationMenuLink></li>
                       <li><NavigationMenuLink asChild><Link to="/faq" className="block p-2 rounded-md hover:bg-muted text-sm">❓ FAQ</Link></NavigationMenuLink></li>
