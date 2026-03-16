@@ -387,6 +387,9 @@ const News = () => {
           title={selectedNews.title}
           description={selectedNews.excerpt || selectedNews.content.substring(0, 150)}
           imageUrl={selectedNews.image_url || undefined}
+          shareType="news"
+          shareId={selectedNews.id}
+          cta="Lire l'article complet sur MIPROJET"
         />
       )}
 
