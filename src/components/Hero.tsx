@@ -36,11 +36,11 @@ export const Hero = () => {
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center pt-20 pb-12 overflow-hidden bg-primary">
+    <section className="relative min-h-[90vh] lg:min-h-screen flex items-center pt-20 pb-12 overflow-hidden bg-primary">
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
           {/* Left Content */}
-          <div className="space-y-6 sm:space-y-8 text-primary-foreground text-center lg:text-left">
+          <div className="space-y-5 sm:space-y-8 text-primary-foreground text-center lg:text-left">
             {/* News Ticker */}
             {latestNews.length > 0 && (
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
