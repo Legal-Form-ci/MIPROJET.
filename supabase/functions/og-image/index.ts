@@ -83,9 +83,11 @@ Deno.serve(async (req) => {
     const format = url.searchParams.get("format");
 
     if (!type || !id) {
+      const badRequestHeaders = new Headers(corsHeaders);
+      badRequestHeaders.set("content-type", "application/json; charset=utf-8");
       return new Response(JSON.stringify({ error: "Missing type or id" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: badRequestHeaders,
       });
     }
 
