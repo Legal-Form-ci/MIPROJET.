@@ -135,19 +135,25 @@ Deno.serve(async (req) => {
     const absoluteImage = toAbsoluteUrl(image, SITE_URL);
 
     if (format === "json") {
+      const jsonHeaders = new Headers(corsHeaders);
+      jsonHeaders.set("content-type", "application/json; charset=utf-8");
       return new Response(JSON.stringify({ title, description: seoDescription, image: absoluteImage, url: pageUrl }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: jsonHeaders,
       });
     }
 
+    const htmlHeaders = new Headers(corsHeaders);
+    htmlHeaders.set("content-type", "text/html; charset=utf-8");
     return new Response(buildHtml({ title, description: seoDescription, image: absoluteImage, pageUrl }), {
-      headers: { ...corsHeaders, "Content-Type": "text/html; charset=utf-8" },
+      headers: htmlHeaders,
     });
   } catch (error) {
     console.error("OG metadata error:", error);
+    const errorHeaders = new Headers(corsHeaders);
+    errorHeaders.set("content-type", "application/json; charset=utf-8");
     return new Response(JSON.stringify({ error: "Internal error" }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: errorHeaders,
     });
   }
 });
