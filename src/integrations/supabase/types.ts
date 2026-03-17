@@ -1173,7 +1173,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_active_subscription: { Args: { _user_id: string }; Returns: boolean }
       has_role: { Args: { _role: string; _user_id: string }; Returns: boolean }
+      user_profile_type: { Args: { _user_id: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
