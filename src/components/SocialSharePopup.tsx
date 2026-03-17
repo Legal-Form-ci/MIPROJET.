@@ -16,13 +16,14 @@ interface SocialSharePopupProps {
 }
 
 const SITE_URL = "https://miprojet.agricapital.ci";
+const SUPABASE_FUNCTIONS_BASE = "https://nrrgqnruoylwztddkntm.supabase.co/functions/v1";
 
 function getShareUrl(props: SocialSharePopupProps): string {
-  // Use /share/:type/:id for social crawlers to get proper OG tags
+  // Use a public edge endpoint that always returns OG-ready HTML for social crawlers
   if (props.shareType && props.shareId) {
-    return `${SITE_URL}/share/${props.shareType}/${props.shareId}`;
+    return `${SUPABASE_FUNCTIONS_BASE}/og-image?type=${encodeURIComponent(props.shareType)}&id=${encodeURIComponent(props.shareId)}`;
   }
-  return props.url;
+  return props.url || SITE_URL;
 }
 
 const platforms = [

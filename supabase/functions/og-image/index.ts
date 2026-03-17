@@ -7,8 +7,69 @@ const corsHeaders = {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const SITE_URL = "https://miprojet.agricapital.ci";
+const SITE_URL = Deno.env.get("PUBLIC_SITE_URL") || "https://miprojet.agricapital.ci";
 const DEFAULT_IMAGE = `${SITE_URL}/miprojet-og-cover.png`;
+
+const ctaByType: Record<string, string> = {
+  news: "Lire l'article complet sur MIPROJET",
+  opportunity: "Découvrir l'opportunité sur MIPROJET",
+  project: "Découvrir le projet sur MIPROJET",
+  document: "Télécharger le document sur MIPROJET",
+  ebook: "Télécharger le guide sur MIPROJET",
+};
+
+const escapeHtml = (value: string) =>
+  value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+
+const toAbsoluteUrl = (value: string, fallbackBase: string) => {
+  if (!value) return value;
+  if (value.startsWith("http://") || value.startsWith("https://")) return value;
+  return `${fallbackBase}${value.startsWith("/") ? "" : "/"}${value}`;
+};
+
+const buildHtml = ({
+  title,
+  description,
+  image,
+  pageUrl,
+}: {
+  title: string;
+  description: string;
+  image: string;
+  pageUrl: string;
+}) => `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${escapeHtml(title)} | MIPROJET</title>
+  <meta name="description" content="${escapeHtml(description)}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="MIPROJET" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:title" content="${escapeHtml(title)}" />
+  <meta property="og:description" content="${escapeHtml(description)}" />
+  <meta property="og:image" content="${escapeHtml(image)}" />
+  <meta property="og:image:secure_url" content="${escapeHtml(image)}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="${escapeHtml(pageUrl)}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${escapeHtml(title)}" />
+  <meta name="twitter:description" content="${escapeHtml(description)}" />
+  <meta name="twitter:image" content="${escapeHtml(image)}" />
+  <link rel="canonical" href="${escapeHtml(pageUrl)}" />
+  <meta http-equiv="refresh" content="0;url=${escapeHtml(pageUrl)}" />
+</head>
+<body>
+  <p>Redirection vers <a href="${escapeHtml(pageUrl)}">${escapeHtml(title)}</a>…</p>
+</body>
+</html>`;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -17,8 +78,9 @@ Deno.serve(async (req) => {
 
   try {
     const url = new URL(req.url);
-    const type = url.searchParams.get("type"); // news, opportunity, project, ebook, document
+    const type = url.searchParams.get("type");
     const id = url.searchParams.get("id");
+    const format = url.searchParams.get("format");
 
     if (!type || !id) {
       return new Response(JSON.stringify({ error: "Missing type or id" }), {
@@ -58,7 +120,7 @@ Deno.serve(async (req) => {
         image = data.image_url || DEFAULT_IMAGE;
         pageUrl = `${SITE_URL}/projects/${id}`;
       }
-    } else if (type === "document") {
+    } else if (type === "document" || type === "ebook") {
       const { data } = await supabase.from("platform_documents").select("title, description, cover_url").eq("id", id).single();
       if (data) {
         title = data.title;
@@ -68,9 +130,18 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Return OG metadata as JSON (used by the Vercel middleware)
-    return new Response(JSON.stringify({ title, description, image, url: pageUrl }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    const cta = ctaByType[type] || "Découvrir sur MIPROJET";
+    const seoDescription = `${description} — ${cta}`.substring(0, 220);
+    const absoluteImage = toAbsoluteUrl(image, SITE_URL);
+
+    if (format === "json") {
+      return new Response(JSON.stringify({ title, description: seoDescription, image: absoluteImage, url: pageUrl }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response(buildHtml({ title, description: seoDescription, image: absoluteImage, pageUrl }), {
+      headers: { ...corsHeaders, "Content-Type": "text/html; charset=utf-8" },
     });
   } catch (error) {
     console.error("OG metadata error:", error);
