@@ -59,7 +59,7 @@ export const Features = () => {
               key={index}
               className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 border-2 hover:border-primary/30"
             >
-              <CardContent className="p-6 space-y-4 text-center">
+              <CardContent className="p-6 space-y-4 text-left">
                 <div className="p-4 bg-gradient-primary rounded-xl w-fit mx-auto">
                   <feature.icon className="h-6 w-6 text-primary-foreground" />
                 </div>
