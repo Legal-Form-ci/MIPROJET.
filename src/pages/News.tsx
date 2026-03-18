@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Calendar, Eye, Search, ArrowRight, Clock, ArrowLeft, X, ImageOff, Share2 } from "lucide-react";
+import { Calendar, Eye, Search, ArrowRight, Clock, ArrowLeft, ImageOff, Share2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { formatDistanceToNow, format } from "date-fns";
@@ -68,17 +67,6 @@ const News = () => {
 
   useEffect(() => {
     document.title = `${t('news.pageTitle')} | MIPROJET`;
-    const setMeta = (attr: string, key: string, content: string) => {
-      let el = document.querySelector(`meta[${attr}="${key}"]`) as HTMLMetaElement | null;
-      if (!el) { el = document.createElement("meta"); el.setAttribute(attr, key); document.head.appendChild(el); }
-      el.content = content;
-    };
-    setMeta("name", "description", "Suivez les dernières actualités de MIPROJET : événements, partenariats, formations et opportunités en Afrique.");
-    setMeta("property", "og:title", t('news.pageTitle'));
-    setMeta("property", "og:description", "Suivez les dernières actualités de MIPROJET");
-    setMeta("property", "og:type", "website");
-    setMeta("property", "og:image", window.location.origin + "/favicon.png");
-    setMeta("name", "twitter:card", "summary_large_image");
     fetchNews();
   }, []);
 
@@ -87,24 +75,11 @@ const News = () => {
       const found = news.find(n => n.id === id);
       if (found) {
         setSelectedNews(found);
-        // Update OG tags for social sharing
         document.title = `${found.title} | MIPROJET`;
-        const setMeta = (attr: string, key: string, content: string) => {
-          let el = document.querySelector(`meta[${attr}="${key}"]`) as HTMLMetaElement | null;
-          if (!el) { el = document.createElement("meta"); el.setAttribute(attr, key); document.head.appendChild(el); }
-          el.content = content;
-        };
-        setMeta("property", "og:title", found.title);
-        setMeta("property", "og:description", found.excerpt || found.content.substring(0, 160));
-        setMeta("property", "og:image", found.image_url || window.location.origin + "/favicon.png");
-        setMeta("property", "og:url", window.location.href);
-        setMeta("property", "og:type", "article");
-        setMeta("name", "twitter:card", "summary_large_image");
-        setMeta("name", "twitter:title", found.title);
-        setMeta("name", "twitter:description", found.excerpt || found.content.substring(0, 160));
-        setMeta("name", "twitter:image", found.image_url || window.location.origin + "/favicon.png");
         supabase.from('news').update({ views_count: (found.views_count || 0) + 1 }).eq('id', id);
       }
+    } else if (!id) {
+      setSelectedNews(null);
     }
   }, [id, news]);
 
@@ -115,7 +90,7 @@ const News = () => {
       .select('*')
       .eq('status', 'published')
       .order('published_at', { ascending: false })
-      .limit(25);
+      .limit(50);
 
     if (!error && data) {
       setNews(data);
@@ -130,21 +105,7 @@ const News = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const openNewsDetail = (item: NewsItem) => {
-    setSelectedNews(item);
-    navigate(`/news/${item.id}`);
-    // Increment view count
-    supabase.from('news').update({ views_count: (item.views_count || 0) + 1 }).eq('id', item.id);
-  };
-
-  const closeNewsDetail = () => {
-    setSelectedNews(null);
-    navigate('/news');
-  };
-
-  // Render content - convert simple formatting to styled text
   const renderContent = (content: string) => {
-    // If content contains HTML tags, render as HTML
     if (content.includes('<p>') || content.includes('<h2>') || content.includes('<strong>')) {
       return (
         <div 
@@ -153,8 +114,6 @@ const News = () => {
         />
       );
     }
-    
-    // Otherwise render as plain paragraphs
     return (
       <div className="space-y-4 text-muted-foreground leading-relaxed">
         {content.split('\n\n').map((paragraph, i) => (
@@ -164,29 +123,111 @@ const News = () => {
     );
   };
 
+  // ARTICLE DETAIL PAGE (inline, no popup)
+  if (selectedNews) {
+    const imageUrl = selectedNews.image_url || defaultImages[0];
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navigation />
+        <main className="flex-1 pt-20">
+          {/* Hero Image */}
+          <div className="relative w-full h-[40vh] md:h-[50vh] overflow-hidden">
+            <img
+              src={imageUrl}
+              alt={selectedNews.title}
+              className="w-full h-full object-cover"
+              onError={(e) => { (e.target as HTMLImageElement).src = defaultImages[0]; }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 container mx-auto">
+              <Badge className="bg-primary text-primary-foreground mb-3">
+                {categories.find(c => c.value === selectedNews.category)?.label || selectedNews.category}
+              </Badge>
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white leading-tight max-w-4xl">
+                {selectedNews.title}
+              </h1>
+            </div>
+          </div>
+
+          {/* Article Content */}
+          <div className="container mx-auto px-4 py-8 md:py-12">
+            <div className="max-w-3xl mx-auto">
+              {/* Meta */}
+              <div className="flex flex-wrap items-center gap-4 mb-8 pb-4 border-b border-border text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  {selectedNews.published_at && format(new Date(selectedNews.published_at), 'PPP', { locale: getLocale() })}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Eye className="h-4 w-4" />
+                  {selectedNews.views_count} vues
+                </div>
+              </div>
+
+              {/* Excerpt */}
+              {selectedNews.excerpt && (
+                <p className="text-lg md:text-xl text-muted-foreground italic mb-8 leading-relaxed border-l-4 border-primary pl-4">
+                  {selectedNews.excerpt}
+                </p>
+              )}
+
+              {/* Content */}
+              {renderContent(selectedNews.content)}
+
+              {/* Actions */}
+              <div className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <Button variant="outline" onClick={() => navigate('/news')}>
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Retour aux actualités
+                </Button>
+                <Button variant="ghost" onClick={() => setShowShare(true)} className="gap-2">
+                  <Share2 className="h-4 w-4" /> Partager
+                </Button>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <SocialSharePopup
+          open={showShare}
+          onClose={() => setShowShare(false)}
+          url={`${window.location.origin}/news/${selectedNews.id}`}
+          title={selectedNews.title}
+          description={selectedNews.excerpt || selectedNews.content.substring(0, 150)}
+          imageUrl={selectedNews.image_url || undefined}
+          shareType="news"
+          shareId={selectedNews.id}
+          cta="Lire l'article complet sur MIPROJET"
+        />
+
+        <Footer />
+      </div>
+    );
+  }
+
+  // NEWS LIST PAGE
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navigation />
       
       <main className="flex-1 pt-20">
         {/* Header */}
-        <section className="bg-gradient-to-r from-primary via-primary to-primary/90 py-16 text-primary-foreground relative overflow-hidden">
-          {/* Decorative elements */}
+        <section className="bg-gradient-to-r from-primary via-primary to-primary/90 py-12 md:py-16 text-primary-foreground relative overflow-hidden">
           <div className="absolute top-0 left-0 w-32 h-32 bg-secondary/20 rounded-full -translate-x-1/2 -translate-y-1/2" />
           <div className="absolute bottom-0 right-0 w-48 h-48 bg-secondary/10 rounded-full translate-x-1/4 translate-y-1/4" />
           
-          <div className="container mx-auto px-4 text-center relative z-10">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+          <div className="container mx-auto px-4 text-left relative z-10">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3">
               Actualités & Blog
             </h1>
-            <p className="text-lg md:text-xl text-primary-foreground/90 max-w-2xl mx-auto">
+            <p className="text-base md:text-lg text-primary-foreground/90 max-w-2xl">
               {t('news.pageSubtitle')}
             </p>
           </div>
         </section>
 
         {/* Filters */}
-        <section className="py-8 border-b border-border bg-card">
+        <section className="py-6 border-b border-border bg-card">
           <div className="container mx-auto px-4">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1">
@@ -215,7 +256,7 @@ const News = () => {
         </section>
 
         {/* News Grid */}
-        <section className="py-12">
+        <section className="py-10 md:py-12">
           <div className="container mx-auto px-4">
             {loading ? (
               <div className="flex items-center justify-center py-20">
@@ -228,46 +269,35 @@ const News = () => {
                 </p>
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 {filteredNews.map((item, index) => {
                   const imageUrl = item.image_url || defaultImages[index % defaultImages.length];
                   
                   return (
                     <article 
                       key={item.id} 
-                      onClick={() => openNewsDetail(item)}
+                      onClick={() => navigate(`/news/${item.id}`)}
                       className="group relative bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-2 border border-border"
                     >
-                      {/* Gradient Accent */}
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
-                      
-                      {/* Top accent - Blue */}
                       <div className="absolute top-0 left-0 w-2/3 h-1 bg-gradient-to-r from-primary to-primary/50 z-20" />
-                      
-                      {/* Bottom accent - Green */}
                       <div className="absolute bottom-0 right-0 w-2/3 h-1 bg-gradient-to-l from-secondary to-secondary/50 z-20" />
                       
-                      {/* Image */}
                       <div className="aspect-video overflow-hidden relative">
                         {imageUrl ? (
                           <img
                             src={imageUrl}
                             alt={item.title}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = defaultImages[index % defaultImages.length];
-                            }}
+                            onError={(e) => { (e.target as HTMLImageElement).src = defaultImages[index % defaultImages.length]; }}
                           />
                         ) : (
                           <div className="w-full h-full bg-muted flex items-center justify-center">
                             <ImageOff className="h-12 w-12 text-muted-foreground/40" />
                           </div>
                         )}
-                        
-                        {/* Category & Views overlay */}
-                        <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
-                          <Badge className="bg-primary text-primary-foreground shadow-lg">
+                        <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
+                          <Badge className="bg-primary text-primary-foreground shadow-lg text-xs">
                             {categories.find(c => c.value === item.category)?.label || item.category}
                           </Badge>
                           <div className="flex items-center gap-1 text-xs bg-black/50 text-white px-2 py-1 rounded-full">
@@ -277,17 +307,15 @@ const News = () => {
                         </div>
                       </div>
                       
-                      {/* Content */}
-                      <div className="p-6">
-                        <h3 className="font-bold text-xl text-foreground line-clamp-2 mb-3 group-hover:text-primary transition-colors">
+                      <div className="p-5">
+                        <h3 className="font-bold text-lg text-foreground line-clamp-2 mb-2 group-hover:text-primary transition-colors text-left">
                           {item.title}
                         </h3>
-                        <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
+                        <p className="text-sm text-muted-foreground line-clamp-3 mb-4 text-left">
                           {item.excerpt || item.content.substring(0, 150)}...
                         </p>
                         
-                        {/* Footer */}
-                        <div className="flex items-center justify-between pt-4 border-t border-border">
+                        <div className="flex items-center justify-between pt-3 border-t border-border">
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
                             <Clock className="h-3.5 w-3.5" />
                             {item.published_at && formatDistanceToNow(new Date(item.published_at), {
@@ -309,92 +337,6 @@ const News = () => {
           </div>
         </section>
       </main>
-
-      {/* News Detail Modal */}
-      <Dialog open={!!selectedNews} onOpenChange={(open) => !open && closeNewsDetail()}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
-          {selectedNews && (
-            <>
-              {/* Header Image */}
-              <div className="relative aspect-video w-full">
-                <img
-                  src={selectedNews.image_url || defaultImages[0]}
-                  alt={selectedNews.title}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = defaultImages[0];
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                
-                {/* Close button */}
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="absolute top-4 right-4 bg-white/20 hover:bg-white/40 text-white"
-                  onClick={closeNewsDetail}
-                >
-                  <X className="h-5 w-5" />
-                </Button>
-                
-                {/* Title overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <Badge className="bg-primary text-primary-foreground mb-3">
-                    {categories.find(c => c.value === selectedNews.category)?.label || selectedNews.category}
-                  </Badge>
-                  <h2 className="text-2xl md:text-3xl font-bold text-white">
-                    {selectedNews.title}
-                  </h2>
-                </div>
-              </div>
-              
-              {/* Content */}
-              <div className="p-6 md:p-8">
-                {/* Meta */}
-                <div className="flex flex-wrap items-center gap-4 mb-6 pb-4 border-b border-border text-sm text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    {selectedNews.published_at && format(new Date(selectedNews.published_at), 'PPP', { locale: getLocale() })}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Eye className="h-4 w-4" />
-                    {selectedNews.views_count} vues
-                  </div>
-                </div>
-                
-                {/* Article content */}
-                {renderContent(selectedNews.content)}
-                
-                {/* Back button & Share */}
-                <div className="mt-8 pt-6 border-t border-border flex items-center justify-between">
-                  <Button variant="outline" onClick={closeNewsDetail}>
-                    <ArrowLeft className="h-4 w-4 mr-2" />
-                    Retour aux actualités
-                  </Button>
-                  <Button variant="ghost" onClick={() => setShowShare(true)} className="gap-2">
-                    <Share2 className="h-4 w-4" /> Partager
-                  </Button>
-                </div>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {selectedNews && (
-        <SocialSharePopup
-          open={showShare}
-          onClose={() => setShowShare(false)}
-          url={`${window.location.origin}/news/${selectedNews.id}`}
-          title={selectedNews.title}
-          description={selectedNews.excerpt || selectedNews.content.substring(0, 150)}
-          imageUrl={selectedNews.image_url || undefined}
-          shareType="news"
-          shareId={selectedNews.id}
-          cta="Lire l'article complet sur MIPROJET"
-        />
-      )}
 
       <Footer />
     </div>
