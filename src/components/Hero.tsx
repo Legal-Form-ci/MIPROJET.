@@ -40,7 +40,7 @@ export const Hero = () => {
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
           {/* Left Content */}
-          <div className="space-y-5 sm:space-y-8 text-primary-foreground text-center lg:text-left">
+          <div className="space-y-4 sm:space-y-6 lg:space-y-8 text-primary-foreground text-left">
             {/* News Ticker */}
             {latestNews.length > 0 && (
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
