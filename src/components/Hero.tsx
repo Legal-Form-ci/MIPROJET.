@@ -73,9 +73,9 @@ export const Hero = () => {
             </p>
 
             {/* Highlights */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl mx-auto lg:mx-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 max-w-xl">
               {highlights.map((item, index) => (
-                <div key={index} className="flex items-center gap-2 text-white/90 justify-center lg:justify-start">
+                <div key={index} className="flex items-center gap-2 text-white/90">
                   <CheckCircle className="h-5 w-5 text-accent flex-shrink-0" />
                   <span className="text-sm sm:text-base">{item}</span>
                 </div>
