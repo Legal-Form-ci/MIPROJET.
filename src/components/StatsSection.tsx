@@ -36,7 +36,7 @@ const StatCard = ({ stat, index, isVisible, t }: { stat: StatItem; index: number
   
   return (
     <div 
-      className="text-center p-6 rounded-2xl bg-card border border-border/50 hover:shadow-elegant transition-all duration-300 hover:-translate-y-1"
+      className="text-center p-4 sm:p-6 rounded-2xl bg-card border border-border/50 hover:shadow-elegant transition-all duration-300 hover:-translate-y-1"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-muted mb-4`}>
