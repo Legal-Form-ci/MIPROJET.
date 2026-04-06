@@ -72,7 +72,7 @@ export const Navigation = () => {
                       <li><NavigationMenuLink asChild><Link to="/projects" className="block p-2 rounded-md hover:bg-muted text-sm">{t('nav.projects')}</Link></NavigationMenuLink></li>
                       <li><NavigationMenuLink asChild><Link to="/submit-project" className="block p-2 rounded-md hover:bg-muted text-sm">{t('nav.submitProject')}</Link></NavigationMenuLink></li>
                       <li><NavigationMenuLink asChild><Link to="/how-it-works" className="block p-2 rounded-md hover:bg-muted text-sm">{t('nav.howItWorks')}</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/incubation" className="block p-2 rounded-md hover:bg-muted text-sm">🚀 Programme d'Incubation</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/incubation" className="block p-2 rounded-md hover:bg-muted text-sm">🚀 {t('nav.incubation')}</Link></NavigationMenuLink></li>
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
