@@ -79,12 +79,12 @@ export const Navigation = () => {
 
                 {/* Services */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm bg-transparent h-9 px-2.5">Services</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="text-sm bg-transparent h-9 px-2.5">{t('nav.servicesMenu')}</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[280px] gap-1 p-2">
                       <li><NavigationMenuLink asChild><Link to="/services" className="block p-2 rounded-md hover:bg-muted text-sm">{t('nav.services')}</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/services/structuration" className="block p-2 rounded-md hover:bg-muted text-sm">📋 Structuration de projets</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/services/accompagnement" className="block p-2 rounded-md hover:bg-muted text-sm">🤝 Accompagnement entreprise</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/services/structuration" className="block p-2 rounded-md hover:bg-muted text-sm">📋 {t('nav.structuring')}</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/services/accompagnement" className="block p-2 rounded-md hover:bg-muted text-sm">🤝 {t('nav.support')}</Link></NavigationMenuLink></li>
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
