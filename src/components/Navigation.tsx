@@ -117,7 +117,7 @@ export const Navigation = () => {
 
                 <NavigationMenuItem>
                   <Link to="/subscription" className="text-accent font-medium hover:text-accent/80 transition-colors text-sm px-2.5 py-2 flex items-center gap-1">
-                    <span className="text-xs">👑</span> Abonnement
+                    <span className="text-xs">👑</span> {t('nav.subscription')}
                   </Link>
                 </NavigationMenuItem>
 
