@@ -91,12 +91,12 @@ export const Navigation = () => {
 
                 {/* Investir */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm bg-transparent text-primary font-medium h-9 px-2.5">Investir</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="text-sm bg-transparent text-primary font-medium h-9 px-2.5">{t('nav.investMenu')}</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[280px] gap-1 p-2">
-                      <li><NavigationMenuLink asChild><Link to="/investors" className="block p-2 rounded-md hover:bg-muted text-sm">💼 Espace Investisseurs</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/opportunities" className="block p-2 rounded-md hover:bg-muted text-sm">🎯 Opportunités</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/ebook" className="block p-2 rounded-md hover:bg-muted text-sm">📕 Guide : 50 Opportunités</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/investors" className="block p-2 rounded-md hover:bg-muted text-sm">💼 {t('nav.investorSpace')}</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/opportunities" className="block p-2 rounded-md hover:bg-muted text-sm">🎯 {t('nav.opportunities')}</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/ebook" className="block p-2 rounded-md hover:bg-muted text-sm">📕 {t('nav.guide50')}</Link></NavigationMenuLink></li>
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
