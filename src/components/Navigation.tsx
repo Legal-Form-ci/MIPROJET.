@@ -254,7 +254,7 @@ export const Navigation = () => {
             )}
 
             <Link to="/subscription" className="block text-accent font-medium hover:text-accent/80 py-2 px-2" onClick={() => setIsMenuOpen(false)}>
-              👑 Abonnement
+              👑 {t('nav.subscription')}
             </Link>
             <Link to="/about" className="block text-foreground hover:text-primary py-2 px-2" onClick={() => setIsMenuOpen(false)}>
               {t('nav.about')}
