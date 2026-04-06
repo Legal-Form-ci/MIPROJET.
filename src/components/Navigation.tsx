@@ -66,7 +66,7 @@ export const Navigation = () => {
 
                 {/* Projets & Services */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm bg-transparent h-9 px-2.5">Projets</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="text-sm bg-transparent h-9 px-2.5">{t('nav.projectsMenu')}</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[280px] gap-1 p-2">
                       <li><NavigationMenuLink asChild><Link to="/projects" className="block p-2 rounded-md hover:bg-muted text-sm">{t('nav.projects')}</Link></NavigationMenuLink></li>
