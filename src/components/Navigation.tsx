@@ -66,58 +66,58 @@ export const Navigation = () => {
 
                 {/* Projets & Services */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm bg-transparent h-9 px-2.5">Projets</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="text-sm bg-transparent h-9 px-2.5">{t('nav.projectsMenu')}</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[280px] gap-1 p-2">
                       <li><NavigationMenuLink asChild><Link to="/projects" className="block p-2 rounded-md hover:bg-muted text-sm">{t('nav.projects')}</Link></NavigationMenuLink></li>
                       <li><NavigationMenuLink asChild><Link to="/submit-project" className="block p-2 rounded-md hover:bg-muted text-sm">{t('nav.submitProject')}</Link></NavigationMenuLink></li>
                       <li><NavigationMenuLink asChild><Link to="/how-it-works" className="block p-2 rounded-md hover:bg-muted text-sm">{t('nav.howItWorks')}</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/incubation" className="block p-2 rounded-md hover:bg-muted text-sm">🚀 Programme d'Incubation</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/incubation" className="block p-2 rounded-md hover:bg-muted text-sm">🚀 {t('nav.incubation')}</Link></NavigationMenuLink></li>
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
 
                 {/* Services */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm bg-transparent h-9 px-2.5">Services</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="text-sm bg-transparent h-9 px-2.5">{t('nav.servicesMenu')}</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[280px] gap-1 p-2">
                       <li><NavigationMenuLink asChild><Link to="/services" className="block p-2 rounded-md hover:bg-muted text-sm">{t('nav.services')}</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/services/structuration" className="block p-2 rounded-md hover:bg-muted text-sm">📋 Structuration de projets</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/services/accompagnement" className="block p-2 rounded-md hover:bg-muted text-sm">🤝 Accompagnement entreprise</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/services/structuration" className="block p-2 rounded-md hover:bg-muted text-sm">📋 {t('nav.structuring')}</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/services/accompagnement" className="block p-2 rounded-md hover:bg-muted text-sm">🤝 {t('nav.support')}</Link></NavigationMenuLink></li>
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
 
                 {/* Investir */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm bg-transparent text-primary font-medium h-9 px-2.5">Investir</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="text-sm bg-transparent text-primary font-medium h-9 px-2.5">{t('nav.investMenu')}</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[280px] gap-1 p-2">
-                      <li><NavigationMenuLink asChild><Link to="/investors" className="block p-2 rounded-md hover:bg-muted text-sm">💼 Espace Investisseurs</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/opportunities" className="block p-2 rounded-md hover:bg-muted text-sm">🎯 Opportunités</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/ebook" className="block p-2 rounded-md hover:bg-muted text-sm">📕 Guide : 50 Opportunités</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/investors" className="block p-2 rounded-md hover:bg-muted text-sm">💼 {t('nav.investorSpace')}</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/opportunities" className="block p-2 rounded-md hover:bg-muted text-sm">🎯 {t('nav.opportunities')}</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/ebook" className="block p-2 rounded-md hover:bg-muted text-sm">📕 {t('nav.guide50')}</Link></NavigationMenuLink></li>
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
 
                 {/* Ressources */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm bg-transparent h-9 px-2.5">Ressources</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="text-sm bg-transparent h-9 px-2.5">{t('nav.resourcesMenu')}</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[280px] gap-1 p-2">
-                      <li><NavigationMenuLink asChild><Link to="/documents" className="block p-2 rounded-md hover:bg-muted text-sm">📚 Documents & Guides</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/news" className="block p-2 rounded-md hover:bg-muted text-sm">📰 Actualités & Blog</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/forum" className="block p-2 rounded-md hover:bg-muted text-sm">💬 Forum</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/success-stories" className="block p-2 rounded-md hover:bg-muted text-sm">🏆 Témoignages</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/faq" className="block p-2 rounded-md hover:bg-muted text-sm">❓ FAQ</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/documents" className="block p-2 rounded-md hover:bg-muted text-sm">📚 {t('nav.documents')}</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/news" className="block p-2 rounded-md hover:bg-muted text-sm">📰 {t('nav.news')}</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/forum" className="block p-2 rounded-md hover:bg-muted text-sm">💬 {t('nav.forum')}</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/success-stories" className="block p-2 rounded-md hover:bg-muted text-sm">🏆 {t('nav.testimonials')}</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/faq" className="block p-2 rounded-md hover:bg-muted text-sm">❓ {t('nav.faq')}</Link></NavigationMenuLink></li>
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
                   <Link to="/subscription" className="text-accent font-medium hover:text-accent/80 transition-colors text-sm px-2.5 py-2 flex items-center gap-1">
-                    <span className="text-xs">👑</span> Abonnement
+                    <span className="text-xs">👑</span> {t('nav.subscription')}
                   </Link>
                 </NavigationMenuItem>
 
@@ -170,7 +170,7 @@ export const Navigation = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive">
                     <LogOut className="mr-2 h-4 w-4" />
-                    Déconnexion
+                    {t('nav.logout')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -203,7 +203,7 @@ export const Navigation = () => {
 
             {/* Projets */}
             <button onClick={() => toggleMobileSub('projects')} className="w-full flex items-center justify-between py-2 px-2 text-foreground hover:text-primary">
-              <span>Projets</span>
+              <span>{t('nav.projectsMenu')}</span>
               <ChevronDown className={cn("h-4 w-4 transition-transform", openMobileSub === 'projects' && "rotate-180")} />
             </button>
             {openMobileSub === 'projects' && (
@@ -211,53 +211,50 @@ export const Navigation = () => {
                 <Link to="/projects" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>{t('nav.projects')}</Link>
                 <Link to="/submit-project" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>{t('nav.submitProject')}</Link>
                 <Link to="/how-it-works" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>{t('nav.howItWorks')}</Link>
-                <Link to="/incubation" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>🚀 Programme d'Incubation</Link>
+                <Link to="/incubation" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>🚀 {t('nav.incubation')}</Link>
               </div>
             )}
 
-            {/* Services */}
             <button onClick={() => toggleMobileSub('services')} className="w-full flex items-center justify-between py-2 px-2 text-foreground hover:text-primary">
-              <span>Services</span>
+              <span>{t('nav.servicesMenu')}</span>
               <ChevronDown className={cn("h-4 w-4 transition-transform", openMobileSub === 'services' && "rotate-180")} />
             </button>
             {openMobileSub === 'services' && (
               <div className="pl-4 space-y-1 border-l-2 border-primary/20 ml-2">
                 <Link to="/services" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>{t('nav.services')}</Link>
-                <Link to="/services/structuration" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>📋 Structuration</Link>
-                <Link to="/services/accompagnement" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>🤝 Accompagnement</Link>
+                <Link to="/services/structuration" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>📋 {t('nav.structuring')}</Link>
+                <Link to="/services/accompagnement" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>🤝 {t('nav.support')}</Link>
               </div>
             )}
 
-            {/* Investir */}
             <button onClick={() => toggleMobileSub('invest')} className="w-full flex items-center justify-between py-2 px-2 text-primary font-medium">
-              <span>Investir</span>
+              <span>{t('nav.investMenu')}</span>
               <ChevronDown className={cn("h-4 w-4 transition-transform", openMobileSub === 'invest' && "rotate-180")} />
             </button>
             {openMobileSub === 'invest' && (
               <div className="pl-4 space-y-1 border-l-2 border-primary/20 ml-2">
-                <Link to="/investors" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>💼 Espace Investisseurs</Link>
-                <Link to="/opportunities" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>🎯 Opportunités</Link>
-                <Link to="/ebook" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>📕 Guide : 50 Opportunités</Link>
+                <Link to="/investors" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>💼 {t('nav.investorSpace')}</Link>
+                <Link to="/opportunities" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>🎯 {t('nav.opportunities')}</Link>
+                <Link to="/ebook" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>📕 {t('nav.guide50')}</Link>
               </div>
             )}
 
-            {/* Ressources */}
             <button onClick={() => toggleMobileSub('resources')} className="w-full flex items-center justify-between py-2 px-2 text-foreground hover:text-primary">
-              <span>Ressources</span>
+              <span>{t('nav.resourcesMenu')}</span>
               <ChevronDown className={cn("h-4 w-4 transition-transform", openMobileSub === 'resources' && "rotate-180")} />
             </button>
             {openMobileSub === 'resources' && (
               <div className="pl-4 space-y-1 border-l-2 border-primary/20 ml-2">
-                <Link to="/documents" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>📚 Documents</Link>
-                <Link to="/news" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>📰 Actualités & Blog</Link>
-                <Link to="/forum" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>💬 Forum</Link>
-                <Link to="/success-stories" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>🏆 Témoignages</Link>
-                <Link to="/faq" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>❓ FAQ</Link>
+                <Link to="/documents" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>📚 {t('nav.documents')}</Link>
+                <Link to="/news" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>📰 {t('nav.news')}</Link>
+                <Link to="/forum" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>💬 {t('nav.forum')}</Link>
+                <Link to="/success-stories" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>🏆 {t('nav.testimonials')}</Link>
+                <Link to="/faq" className="block py-1.5 px-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>❓ {t('nav.faq')}</Link>
               </div>
             )}
 
             <Link to="/subscription" className="block text-accent font-medium hover:text-accent/80 py-2 px-2" onClick={() => setIsMenuOpen(false)}>
-              👑 Abonnement
+              👑 {t('nav.subscription')}
             </Link>
             <Link to="/about" className="block text-foreground hover:text-primary py-2 px-2" onClick={() => setIsMenuOpen(false)}>
               {t('nav.about')}
@@ -285,7 +282,7 @@ export const Navigation = () => {
                   )}
                   <Button variant="ghost" className="w-full justify-start text-destructive" onClick={handleSignOut}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    Déconnexion
+                    {t('nav.logout')}
                   </Button>
                 </>
               ) : (
