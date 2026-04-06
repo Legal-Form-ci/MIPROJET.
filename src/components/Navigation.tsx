@@ -282,7 +282,7 @@ export const Navigation = () => {
                   )}
                   <Button variant="ghost" className="w-full justify-start text-destructive" onClick={handleSignOut}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    Déconnexion
+                    {t('nav.logout')}
                   </Button>
                 </>
               ) : (
