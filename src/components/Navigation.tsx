@@ -103,14 +103,14 @@ export const Navigation = () => {
 
                 {/* Ressources */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm bg-transparent h-9 px-2.5">Ressources</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="text-sm bg-transparent h-9 px-2.5">{t('nav.resourcesMenu')}</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[280px] gap-1 p-2">
-                      <li><NavigationMenuLink asChild><Link to="/documents" className="block p-2 rounded-md hover:bg-muted text-sm">📚 Documents & Guides</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/news" className="block p-2 rounded-md hover:bg-muted text-sm">📰 Actualités & Blog</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/forum" className="block p-2 rounded-md hover:bg-muted text-sm">💬 Forum</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/success-stories" className="block p-2 rounded-md hover:bg-muted text-sm">🏆 Témoignages</Link></NavigationMenuLink></li>
-                      <li><NavigationMenuLink asChild><Link to="/faq" className="block p-2 rounded-md hover:bg-muted text-sm">❓ FAQ</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/documents" className="block p-2 rounded-md hover:bg-muted text-sm">📚 {t('nav.documents')}</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/news" className="block p-2 rounded-md hover:bg-muted text-sm">📰 {t('nav.news')}</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/forum" className="block p-2 rounded-md hover:bg-muted text-sm">💬 {t('nav.forum')}</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/success-stories" className="block p-2 rounded-md hover:bg-muted text-sm">🏆 {t('nav.testimonials')}</Link></NavigationMenuLink></li>
+                      <li><NavigationMenuLink asChild><Link to="/faq" className="block p-2 rounded-md hover:bg-muted text-sm">❓ {t('nav.faq')}</Link></NavigationMenuLink></li>
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
