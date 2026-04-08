@@ -46,6 +46,8 @@ const Ebook = lazy(() => import("./pages/Ebook"));
 const Forum = lazy(() => import("./pages/Forum"));
 const DocumentDownload = lazy(() => import("./pages/DocumentDownload"));
 const Documents = lazy(() => import("./pages/Documents"));
+const MiProjetPlusLanding = lazy(() => import("./pages/miprojet-plus/MiProjetPlusLanding"));
+const MiProjetPlusApp = lazy(() => import("./pages/miprojet-plus/MiProjetPlusApp"));
 
 const queryClient = new QueryClient();
 
@@ -181,6 +183,23 @@ const App = () => (
             <Route path="/news" element={<News />} />
             <Route path="/news/:id" element={<News />} />
             <Route path="/actualites" element={<News />} />
+            
+            {/* MiProjet+ */}
+            <Route path="/miprojet-plus" element={
+              <Suspense fallback={<PageLoader />}>
+                <MiProjetPlusLanding />
+              </Suspense>
+            } />
+            <Route path="/miprojet-plus/app" element={
+              <Suspense fallback={<PageLoader />}>
+                <MiProjetPlusApp />
+              </Suspense>
+            } />
+            <Route path="/miprojet-plus/app/*" element={
+              <Suspense fallback={<PageLoader />}>
+                <MiProjetPlusApp />
+              </Suspense>
+            } />
             
             {/* Admin */}
             <Route path="/admin/init" element={<AdminInit />} />
