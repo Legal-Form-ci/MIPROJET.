@@ -117,14 +117,10 @@ export const EnterpriseForm = () => {
         user_id: user.id,
         service_type: 'enterprise',
         company_name: formData.companyName,
-        company_type: formData.companyType,
         sector: formData.sector,
-        description: formData.description,
+        description: `${formData.description}\n\nType: ${formData.companyType}\nCA: ${formData.annualRevenue}\nDocs financiers: ${formData.hasFinancialStatements ? 'Oui' : 'Non'}`,
         funding_needed: formData.fundingNeeded ? parseFloat(formData.fundingNeeded) : null,
-        annual_revenue: formData.annualRevenue ? parseFloat(formData.annualRevenue) : null,
         has_business_plan: formData.hasBusinessPlan,
-        has_financial_statements: formData.hasFinancialStatements,
-        documents: formData.files || [],
         status: 'pending',
       });
 

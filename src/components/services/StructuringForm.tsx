@@ -85,8 +85,6 @@ export const StructuringForm = () => {
         description: formData.description,
         funding_needed: formData.fundingNeeded ? parseFloat(formData.fundingNeeded) : null,
         has_business_plan: formData.needsBusinessPlan,
-        has_financial_statements: false,
-        documents: files.map(f => f.name),
         status: 'pending',
       });
 
