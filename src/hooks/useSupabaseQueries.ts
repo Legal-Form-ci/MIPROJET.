@@ -281,10 +281,10 @@ export const useUpdateProject = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<any> }) => {
+    mutationFn: async ({ id, data }: { id: string; data: Record<string, unknown> }) => {
       const { data: result, error } = await supabase
         .from('projects')
-        .update(data)
+        .update(data as any)
         .eq('id', id)
         .select()
         .single();

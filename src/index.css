@@ -105,6 +105,7 @@ All colors MUST be HSL.
 
   html {
     font-family: 'Source Sans 3', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
   }
 
   body {
@@ -113,15 +114,34 @@ All colors MUST be HSL.
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold tracking-tight;
     text-wrap: balance;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   p {
     text-wrap: pretty;
+    overflow-wrap: break-word;
+  }
+
+  /* Fix mobile input zoom and touch issues */
+  input, textarea, select {
+    font-size: 16px !important;
+    -webkit-appearance: none;
+    touch-action: manipulation;
+  }
+
+  @media (min-width: 768px) {
+    input, textarea, select {
+      font-size: inherit !important;
+    }
   }
 }
 

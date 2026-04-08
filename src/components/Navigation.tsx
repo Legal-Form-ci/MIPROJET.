@@ -116,6 +116,12 @@ export const Navigation = () => {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
+                  <Link to="/miprojet-plus" className="text-emerald-600 font-semibold hover:text-emerald-500 transition-colors text-sm px-2.5 py-2 flex items-center gap-1">
+                    <span className="text-xs">➕</span> MiProjet+
+                  </Link>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
                   <Link to="/subscription" className="text-accent font-medium hover:text-accent/80 transition-colors text-sm px-2.5 py-2 flex items-center gap-1">
                     <span className="text-xs">👑</span> {t('nav.subscription')}
                   </Link>
@@ -253,6 +259,9 @@ export const Navigation = () => {
               </div>
             )}
 
+            <Link to="/miprojet-plus" className="block text-emerald-600 font-semibold hover:text-emerald-500 py-2 px-2" onClick={() => setIsMenuOpen(false)}>
+              ➕ MiProjet+
+            </Link>
             <Link to="/subscription" className="block text-accent font-medium hover:text-accent/80 py-2 px-2" onClick={() => setIsMenuOpen(false)}>
               👑 {t('nav.subscription')}
             </Link>

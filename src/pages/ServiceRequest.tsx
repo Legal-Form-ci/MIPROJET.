@@ -132,15 +132,11 @@ const ServiceRequest = () => {
         user_id: user.id,
         service_type: formData.serviceType,
         company_name: formData.companyName || null,
-        company_type: formData.companyType || null,
         sector: formData.sector || null,
         project_stage: formData.projectStage || null,
-        description: formData.description || null,
+        description: `${formData.description || ''}\n\nType: ${formData.companyType}\nCA: ${formData.annualRevenue}\nDocs financiers: ${formData.hasFinancialStatements ? 'Oui' : 'Non'}`,
         funding_needed: formData.fundingNeeded ? parseFloat(formData.fundingNeeded) : null,
-        annual_revenue: formData.annualRevenue ? parseFloat(formData.annualRevenue) : null,
         has_business_plan: formData.hasBusinessPlan,
-        has_financial_statements: formData.hasFinancialStatements,
-        documents: files.map(f => f.name),
         status: 'pending',
       });
 
