@@ -388,6 +388,303 @@ export type Database = {
         }
         Relationships: []
       }
+      mp_certifications: {
+        Row: {
+          admin_notes: string | null
+          certification_type: string | null
+          certified_at: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          project_id: string
+          report_url: string | null
+          scoring_id: string | null
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          certification_type?: string | null
+          certified_at?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          project_id: string
+          report_url?: string | null
+          scoring_id?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          certification_type?: string | null
+          certified_at?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          project_id?: string
+          report_url?: string | null
+          scoring_id?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mp_certifications_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "mp_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mp_certifications_scoring_id_fkey"
+            columns: ["scoring_id"]
+            isOneToOne: false
+            referencedRelation: "mp_scoring_results"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mp_financial_records: {
+        Row: {
+          amount: number
+          category: string | null
+          created_at: string
+          currency: string | null
+          description: string | null
+          id: string
+          project_id: string
+          record_date: string
+          record_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          category?: string | null
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          id?: string
+          project_id: string
+          record_date?: string
+          record_type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          category?: string | null
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          id?: string
+          project_id?: string
+          record_date?: string
+          record_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mp_financial_records_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "mp_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mp_funder_connections: {
+        Row: {
+          contact_info: string | null
+          contacted_at: string | null
+          created_at: string
+          funder_name: string
+          funder_type: string | null
+          id: string
+          notes: string | null
+          project_id: string | null
+          responded_at: string | null
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          contact_info?: string | null
+          contacted_at?: string | null
+          created_at?: string
+          funder_name: string
+          funder_type?: string | null
+          id?: string
+          notes?: string | null
+          project_id?: string | null
+          responded_at?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          contact_info?: string | null
+          contacted_at?: string | null
+          created_at?: string
+          funder_name?: string
+          funder_type?: string | null
+          id?: string
+          notes?: string | null
+          project_id?: string | null
+          responded_at?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mp_funder_connections_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "mp_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mp_projects: {
+        Row: {
+          activity_type: string | null
+          annual_revenue: number | null
+          city: string | null
+          country: string | null
+          created_at: string
+          creation_date: string | null
+          description: string | null
+          employees_count: number | null
+          has_accounting: boolean | null
+          has_bank_account: boolean | null
+          has_business_plan: boolean | null
+          id: string
+          legal_status: string | null
+          monthly_expenses: number | null
+          sector: string | null
+          status: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activity_type?: string | null
+          annual_revenue?: number | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          creation_date?: string | null
+          description?: string | null
+          employees_count?: number | null
+          has_accounting?: boolean | null
+          has_bank_account?: boolean | null
+          has_business_plan?: boolean | null
+          id?: string
+          legal_status?: string | null
+          monthly_expenses?: number | null
+          sector?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activity_type?: string | null
+          annual_revenue?: number | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          creation_date?: string | null
+          description?: string | null
+          employees_count?: number | null
+          has_accounting?: boolean | null
+          has_bank_account?: boolean | null
+          has_business_plan?: boolean | null
+          id?: string
+          legal_status?: string | null
+          monthly_expenses?: number | null
+          sector?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mp_scoring_results: {
+        Row: {
+          answers: Json | null
+          created_at: string
+          faiblesses: string[] | null
+          forces: string[] | null
+          id: string
+          is_active: boolean | null
+          niveau: string | null
+          project_id: string
+          recommandations: string[] | null
+          score_financier: number | null
+          score_global: number | null
+          score_impact: number | null
+          score_juridique: number | null
+          score_marche: number | null
+          score_technique: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          answers?: Json | null
+          created_at?: string
+          faiblesses?: string[] | null
+          forces?: string[] | null
+          id?: string
+          is_active?: boolean | null
+          niveau?: string | null
+          project_id: string
+          recommandations?: string[] | null
+          score_financier?: number | null
+          score_global?: number | null
+          score_impact?: number | null
+          score_juridique?: number | null
+          score_marche?: number | null
+          score_technique?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          answers?: Json | null
+          created_at?: string
+          faiblesses?: string[] | null
+          forces?: string[] | null
+          id?: string
+          is_active?: boolean | null
+          niveau?: string | null
+          project_id?: string
+          recommandations?: string[] | null
+          score_financier?: number | null
+          score_global?: number | null
+          score_impact?: number | null
+          score_juridique?: number | null
+          score_marche?: number | null
+          score_technique?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mp_scoring_results_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "mp_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       news: {
         Row: {
           archived_at: string | null
