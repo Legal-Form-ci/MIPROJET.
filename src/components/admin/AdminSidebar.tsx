@@ -53,6 +53,7 @@ const menuGroups = [
     label: "MiProjet+",
     items: [
       { id: "mp-overview", label: "Projets & Scores", icon: Sparkles },
+      { id: "mp-analytics", label: "Analytiques", icon: BarChart3 },
       { id: "mp-certifications", label: "Certifications", icon: Award },
     ],
   },
