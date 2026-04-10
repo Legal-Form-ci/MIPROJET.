@@ -1,6 +1,4 @@
 interface ScoringPDFExportProps {
-
-interface ScoringPDFExportProps {
   score: number;
   niveau: string;
   scores: {
