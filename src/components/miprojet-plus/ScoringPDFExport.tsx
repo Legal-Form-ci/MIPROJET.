@@ -1,7 +1,4 @@
-import { useRef, useCallback } from "react";
-import { Button } from "@/components/ui/button";
-import { Download, Loader2 } from "lucide-react";
-import MiProjetPlusName from "./MiProjetPlusName";
+interface ScoringPDFExportProps {
 
 interface ScoringPDFExportProps {
   score: number;
