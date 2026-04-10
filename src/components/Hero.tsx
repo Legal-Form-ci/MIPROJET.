@@ -43,14 +43,14 @@ export const Hero = () => {
           <div className="space-y-4 sm:space-y-6 lg:space-y-8 text-primary-foreground text-left">
             {/* News Ticker */}
             {latestNews.length > 0 && (
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 overflow-hidden">
                 <div className="flex items-center gap-2 mb-1">
                   <Newspaper className="h-4 w-4 text-accent flex-shrink-0" />
                   <span className="text-xs font-semibold text-accent uppercase">Actualités</span>
                 </div>
                 <div className="space-y-1">
                   {latestNews.map((n) => (
-                    <Link key={n.id} to={`/news/${n.id}`} className="block text-sm text-white/90 hover:text-accent transition-colors truncate">
+                    <Link key={n.id} to={`/news/${n.id}`} className="block text-sm text-white/90 hover:text-accent transition-colors truncate max-w-full overflow-hidden">
                       → {n.title}
                     </Link>
                   ))}

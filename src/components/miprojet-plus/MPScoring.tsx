@@ -140,6 +140,14 @@ const MPScoring = ({ onBack }: MPScoringProps) => {
     if (error) {
       toast({ title: "Erreur", description: error.message, variant: "destructive" });
     } else {
+      // Send notification
+      await supabase.from("notifications").insert({
+        user_id: user.id,
+        title: "📊 Score calculé",
+        message: `Votre MIPROJET SCORE est de ${scores.global}/100 (${getNiveauLabel(niveau)})`,
+        type: "scoring",
+        link: "/miprojet-plus/app",
+      });
       toast({ title: "Score enregistré", description: `Votre MIPROJET SCORE est de ${scores.global}/100` });
       setShowResults(true);
     }

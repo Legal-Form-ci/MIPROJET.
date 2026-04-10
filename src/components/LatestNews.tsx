@@ -107,7 +107,7 @@ export const LatestNews = () => {
         </div>
 
         {/* News Cards - Horizontal scroll on mobile, grid on desktop */}
-        <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory md:grid md:grid-cols-3 md:overflow-visible md:pb-0 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory md:grid md:grid-cols-3 md:overflow-visible md:pb-0 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
           {news.map((item, index) => {
             const imageUrl = item.image_url || defaultImages[index % defaultImages.length];
             const excerpt = item.excerpt || item.content?.substring(0, 120) + '...';
@@ -116,7 +116,7 @@ export const LatestNews = () => {
               <article 
                 key={item.id} 
                 onClick={() => handleNewsClick(item.id)}
-                className="group relative bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-2 min-w-[300px] md:min-w-0 snap-start flex-shrink-0 md:flex-shrink"
+                className="group relative bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-2 min-w-[280px] max-w-[320px] md:min-w-0 md:max-w-none snap-start flex-shrink-0 md:flex-shrink"
               >
                 {/* Gradient Accent - Blue top-left, Green bottom-right */}
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
