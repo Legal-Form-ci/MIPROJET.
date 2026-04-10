@@ -9,7 +9,7 @@ import {
   Trophy, TrendingUp, AlertTriangle, XCircle, Download, Phone,
   CheckCircle, Star, ArrowRight, Sparkles, MessageCircle
 } from "lucide-react";
-import { MiProjetPlusName } from "./MiProjetPlusName";
+import MiProjetPlusName from "./MiProjetPlusName";
 
 interface ScoringResultPopupProps {
   open: boolean;
