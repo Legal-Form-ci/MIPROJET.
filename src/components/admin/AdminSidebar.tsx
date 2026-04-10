@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Users, FolderKanban, Settings, 
   FileText, BarChart3, Home, Newspaper,
   Receipt, CreditCard, HelpCircle, BookOpen, Crown, Briefcase, Mail, UserCheck,
-  ChevronDown, FileDown, Shield
+  ChevronDown, FileDown, Shield, Award, Sparkles
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -47,6 +47,13 @@ const menuGroups = [
       { id: "requests", label: "Demandes de services", icon: FileText },
       { id: "evaluations", label: "Évaluations", icon: BarChart3 },
       { id: "subscriptions", label: "Abonnements", icon: Crown },
+    ],
+  },
+  {
+    label: "MiProjet+",
+    items: [
+      { id: "mp-overview", label: "Projets & Scores", icon: Sparkles },
+      { id: "mp-certifications", label: "Certifications", icon: Award },
     ],
   },
   {
