@@ -56,7 +56,8 @@ export const AdminMPAnalytics = () => {
   // Certification status
   const certStatusData = [
     { name: "En attente", value: certs.filter(c => c.status === "pending").length, color: "#d97706" },
-    { name: "Approuvées", value: certs.filter(c => c.status === "approved").length, color: "#059669" },
+    { name: "En examen", value: certs.filter(c => c.status === "in_review").length, color: "#3b82f6" },
+    { name: "Certifiées", value: certs.filter(c => c.status === "certified").length, color: "#059669" },
     { name: "Rejetées", value: certs.filter(c => c.status === "rejected").length, color: "#dc2626" },
   ].filter(d => d.value > 0);
 

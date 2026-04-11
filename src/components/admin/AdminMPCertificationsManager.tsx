@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -19,15 +19,50 @@ const statusOptions = [
 export const AdminMPCertificationsManager = () => {
   const { toast } = useToast();
   const [certifications, setCertifications] = useState<any[]>([]);
+  const [profiles, setProfiles] = useState<Record<string, any>>({});
+  const [projectNames, setProjectNames] = useState<Record<string, string>>({});
+  const [scoreMap, setScoreMap] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
   const [notes, setNotes] = useState<Record<string, string>>({});
 
   const fetchData = async () => {
     const { data } = await supabase
       .from("mp_certifications")
-      .select("*, mp_projects(title), mp_scoring_results(score_global, niveau)")
+      .select("*")
       .order("created_at", { ascending: false });
-    if (data) setCertifications(data);
+    
+    if (data) {
+      setCertifications(data);
+      
+      // Collect IDs
+      const userIds = new Set<string>();
+      const projectIds = new Set<string>();
+      data.forEach(c => { userIds.add(c.user_id); projectIds.add(c.project_id); });
+      
+      // Fetch profiles
+      if (userIds.size > 0) {
+        const { data: profs } = await supabase.from("profiles").select("id, first_name, last_name, email").in("id", Array.from(userIds));
+        const pMap: Record<string, any> = {};
+        profs?.forEach(p => { pMap[p.id] = p; });
+        setProfiles(pMap);
+      }
+      
+      // Fetch project names
+      if (projectIds.size > 0) {
+        const { data: projs } = await supabase.from("mp_projects").select("id, title").in("id", Array.from(projectIds));
+        const nMap: Record<string, string> = {};
+        projs?.forEach(p => { nMap[p.id] = p.title; });
+        setProjectNames(nMap);
+      }
+      
+      // Fetch scores for these projects
+      if (projectIds.size > 0) {
+        const { data: scrs } = await supabase.from("mp_scoring_results").select("project_id, score_global, niveau").eq("is_active", true).in("project_id", Array.from(projectIds));
+        const sMap: Record<string, any> = {};
+        scrs?.forEach(s => { sMap[s.project_id] = s; });
+        setScoreMap(sMap);
+      }
+    }
     setLoading(false);
   };
 
@@ -40,7 +75,6 @@ export const AdminMPCertificationsManager = () => {
     const { error } = await supabase.from("mp_certifications").update(updates).eq("id", id);
     if (error) { toast({ title: "Erreur", description: error.message, variant: "destructive" }); return; }
 
-    // Send notification
     await supabase.from("notifications").insert({
       user_id: userId,
       title: status === "certified" ? "🎉 Certification approuvée" : status === "rejected" ? "❌ Certification refusée" : "📋 Certification en cours d'examen",
@@ -51,6 +85,13 @@ export const AdminMPCertificationsManager = () => {
 
     toast({ title: "Statut mis à jour" });
     fetchData();
+  };
+
+  const getProfileName = (userId: string) => {
+    const p = profiles[userId];
+    if (!p) return "—";
+    const name = `${p.first_name || ""} ${p.last_name || ""}`.trim();
+    return name || p.email || "—";
   };
 
   const stats = {
@@ -95,6 +136,7 @@ export const AdminMPCertificationsManager = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Projet</TableHead>
+                  <TableHead>Utilisateur</TableHead>
                   <TableHead>Score</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Statut</TableHead>
@@ -104,12 +146,12 @@ export const AdminMPCertificationsManager = () => {
               </TableHeader>
               <TableBody>
                 {certifications.map(c => {
-                  const project = c.mp_projects as any;
-                  const scoring = c.mp_scoring_results as any;
                   const st = statusOptions.find(s => s.value === c.status);
+                  const scoring = scoreMap[c.project_id];
                   return (
                     <TableRow key={c.id}>
-                      <TableCell className="font-medium">{project?.title || "—"}</TableCell>
+                      <TableCell className="font-medium">{projectNames[c.project_id] || "—"}</TableCell>
+                      <TableCell className="text-sm">{getProfileName(c.user_id)}</TableCell>
                       <TableCell>
                         {scoring ? <span className="font-bold">{scoring.score_global}/100</span> : "—"}
                       </TableCell>
@@ -134,7 +176,7 @@ export const AdminMPCertificationsManager = () => {
                   );
                 })}
                 {certifications.length === 0 && (
-                  <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Aucune demande de certification</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">Aucune demande de certification</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>

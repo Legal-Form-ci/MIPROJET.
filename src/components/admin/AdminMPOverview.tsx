@@ -9,16 +9,34 @@ import { Loader2, BarChart3, FileText, TrendingUp } from "lucide-react";
 export const AdminMPOverview = () => {
   const [projects, setProjects] = useState<any[]>([]);
   const [scores, setScores] = useState<any[]>([]);
+  const [profiles, setProfiles] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       const [projRes, scoreRes] = await Promise.all([
-        supabase.from("mp_projects").select("*, profiles(first_name, last_name, email)").order("created_at", { ascending: false }).limit(100),
-        supabase.from("mp_scoring_results").select("*, mp_projects(title), profiles:user_id(first_name, last_name)").eq("is_active", true).order("created_at", { ascending: false }).limit(100),
+        supabase.from("mp_projects").select("*").order("created_at", { ascending: false }).limit(200),
+        supabase.from("mp_scoring_results").select("*, mp_projects(title)").eq("is_active", true).order("created_at", { ascending: false }).limit(200),
       ]);
-      if (projRes.data) setProjects(projRes.data);
-      if (scoreRes.data) setScores(scoreRes.data);
+      
+      const projData = projRes.data || [];
+      const scoreData = scoreRes.data || [];
+      
+      // Collect unique user_ids
+      const userIds = new Set<string>();
+      projData.forEach(p => userIds.add(p.user_id));
+      scoreData.forEach(s => userIds.add(s.user_id));
+      
+      // Fetch profiles for these users
+      if (userIds.size > 0) {
+        const { data: profilesData } = await supabase.from("profiles").select("id, first_name, last_name, email").in("id", Array.from(userIds));
+        const profileMap: Record<string, any> = {};
+        profilesData?.forEach(p => { profileMap[p.id] = p; });
+        setProfiles(profileMap);
+      }
+      
+      setProjects(projData);
+      setScores(scoreData);
       setLoading(false);
     };
     fetchData();
@@ -32,6 +50,13 @@ export const AdminMPOverview = () => {
   const getNiveauLabel = (n: string) => {
     const m: Record<string, string> = { financable: "Finançable", prometteur: "Prometteur", fragile: "Fragile", non_financable: "Non finançable" };
     return m[n] || n;
+  };
+
+  const getProfileName = (userId: string) => {
+    const p = profiles[userId];
+    if (!p) return "—";
+    const name = `${p.first_name || ""} ${p.last_name || ""}`.trim();
+    return name || p.email || "—";
   };
 
   const stats = {
@@ -91,19 +116,16 @@ export const AdminMPOverview = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {projects.map(p => {
-                      const profile = p.profiles as any;
-                      return (
-                        <TableRow key={p.id}>
-                          <TableCell className="font-medium">{p.title}</TableCell>
-                          <TableCell className="text-sm">{profile ? `${profile.first_name || ""} ${profile.last_name || ""}`.trim() || profile.email : "—"}</TableCell>
-                          <TableCell><Badge variant="outline" className="text-xs">{p.activity_type}</Badge></TableCell>
-                          <TableCell className="text-sm">{p.sector || "—"}</TableCell>
-                          <TableCell className="text-sm">{p.city || "—"}</TableCell>
-                          <TableCell className="text-sm text-muted-foreground whitespace-nowrap">{new Date(p.created_at).toLocaleDateString("fr-FR")}</TableCell>
-                        </TableRow>
-                      );
-                    })}
+                    {projects.map(p => (
+                      <TableRow key={p.id}>
+                        <TableCell className="font-medium">{p.title}</TableCell>
+                        <TableCell className="text-sm">{getProfileName(p.user_id)}</TableCell>
+                        <TableCell><Badge variant="outline" className="text-xs">{p.activity_type}</Badge></TableCell>
+                        <TableCell className="text-sm">{p.sector || "—"}</TableCell>
+                        <TableCell className="text-sm">{p.city || "—"}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground whitespace-nowrap">{new Date(p.created_at).toLocaleDateString("fr-FR")}</TableCell>
+                      </TableRow>
+                    ))}
                     {projects.length === 0 && (
                       <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Aucun projet MiProjet+</TableCell></TableRow>
                     )}
@@ -136,11 +158,10 @@ export const AdminMPOverview = () => {
                   <TableBody>
                     {scores.map(s => {
                       const project = s.mp_projects as any;
-                      const profile = s.profiles as any;
                       return (
                         <TableRow key={s.id}>
                           <TableCell className="font-medium">{project?.title || "—"}</TableCell>
-                          <TableCell className="text-sm">{profile ? `${profile.first_name || ""} ${profile.last_name || ""}`.trim() : "—"}</TableCell>
+                          <TableCell className="text-sm">{getProfileName(s.user_id)}</TableCell>
                           <TableCell><span className="font-bold text-lg">{s.score_global}/100</span></TableCell>
                           <TableCell><Badge className={getNiveauColor(s.niveau)}>{getNiveauLabel(s.niveau)}</Badge></TableCell>
                           <TableCell className="text-sm">{s.score_juridique}/15</TableCell>
