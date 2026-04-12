@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, Eye, Search, ArrowRight, Clock, ArrowLeft, ImageOff, Share2 } from "lucide-react";
+import { Calendar, Eye, Search, ArrowRight, Clock, ArrowLeft, ImageOff, Share2, Newspaper, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { formatDistanceToNow, format } from "date-fns";
@@ -23,6 +23,7 @@ interface NewsItem {
   published_at: string | null;
   views_count: number;
   created_at: string;
+  is_featured: boolean;
 }
 
 const News = () => {
@@ -48,25 +49,24 @@ const News = () => {
   };
 
   const categories = [
-    { value: "all", label: t('news.allCategories') || "Toutes les catégories" },
-    { value: "general", label: t('news.categoryGeneral') || "Général" },
-    { value: "events", label: t('news.categoryEvents') || "Événements" },
-    { value: "projects", label: t('news.categoryProjects') || "Projets" },
-    { value: "partnerships", label: t('news.categoryPartnerships') || "Partenariats" },
-    { value: "training", label: t('news.categoryTraining') || "Formations" },
-    { value: "expansion", label: "Expansion" },
-    { value: "financement", label: "Financement" },
-    { value: "formation", label: "Formation" },
+    { value: "all", label: "Toutes les catégories" },
+    { value: "general", label: "Général" },
+    { value: "events", label: "Événements" },
+    { value: "projects", label: "Projets" },
+    { value: "partnerships", label: "Partenariats" },
+    { value: "training", label: "Formations" },
+    { value: "opportunities", label: "Opportunités" },
+    { value: "funding", label: "Financement" },
   ];
 
   const defaultImages = [
     "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&h=500&fit=crop",
     "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=500&fit=crop",
-    "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800&h=500&fit=crop"
+    "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800&h=500&fit=crop",
   ];
 
   useEffect(() => {
-    document.title = `${t('news.pageTitle')} | MIPROJET`;
+    document.title = "Actualités & Blog | MIPROJET";
     fetchNews();
   }, []);
 
@@ -91,10 +91,7 @@ const News = () => {
       .eq('status', 'published')
       .order('published_at', { ascending: false })
       .limit(50);
-
-    if (!error && data) {
-      setNews(data);
-    }
+    if (!error && data) setNews(data);
     setLoading(false);
   };
 
@@ -105,17 +102,30 @@ const News = () => {
     return matchesSearch && matchesCategory;
   });
 
+  const featuredNews = filteredNews.filter(n => n.is_featured);
+  const regularNews = filteredNews.filter(n => !n.is_featured);
+
   const renderContent = (content: string) => {
     if (content.includes('<p>') || content.includes('<h2>') || content.includes('<strong>')) {
       return (
-        <div 
-          className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-li:text-muted-foreground"
+        <div
+          className="prose prose-lg max-w-none
+            prose-headings:text-foreground prose-headings:font-bold prose-headings:mt-8 prose-headings:mb-4
+            prose-h2:text-2xl prose-h2:border-b prose-h2:border-border prose-h2:pb-2
+            prose-h3:text-xl
+            prose-p:text-foreground/80 prose-p:leading-relaxed prose-p:mb-4
+            prose-strong:text-foreground
+            prose-li:text-foreground/80
+            prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:rounded-r-lg
+            prose-table:border prose-table:border-border prose-th:bg-muted prose-th:p-3 prose-td:p-3 prose-td:border prose-td:border-border
+            prose-img:rounded-xl prose-img:shadow-lg prose-img:my-6
+            prose-hr:border-border prose-hr:my-8"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       );
     }
     return (
-      <div className="space-y-4 text-muted-foreground leading-relaxed">
+      <div className="space-y-4 text-foreground/80 leading-relaxed text-base">
         {content.split('\n\n').map((paragraph, i) => (
           <p key={i}>{paragraph}</p>
         ))}
@@ -123,65 +133,67 @@ const News = () => {
     );
   };
 
-  // ARTICLE DETAIL PAGE (inline, no popup)
+  // ===== ARTICLE DETAIL =====
   if (selectedNews) {
     const imageUrl = selectedNews.image_url || defaultImages[0];
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Navigation />
         <main className="flex-1 pt-20">
-          {/* Hero Image */}
-          <div className="relative w-full h-[40vh] md:h-[50vh] overflow-hidden">
-            <img
-              src={imageUrl}
-              alt={selectedNews.title}
-              className="w-full h-full object-cover"
-              onError={(e) => { (e.target as HTMLImageElement).src = defaultImages[0]; }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 container mx-auto">
-              <Badge className="bg-primary text-primary-foreground mb-3">
-                {categories.find(c => c.value === selectedNews.category)?.label || selectedNews.category}
-              </Badge>
-              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white leading-tight max-w-4xl">
-                {selectedNews.title}
-              </h1>
+          {/* Hero */}
+          <div className="relative w-full h-[40vh] md:h-[55vh] overflow-hidden">
+            <img src={imageUrl} alt={selectedNews.title} className="w-full h-full object-cover"
+              onError={(e) => { (e.target as HTMLImageElement).src = defaultImages[0]; }} />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
+              <div className="container mx-auto max-w-4xl">
+                <Badge className="bg-primary text-primary-foreground mb-4 text-sm px-3 py-1">
+                  {categories.find(c => c.value === selectedNews.category)?.label || selectedNews.category}
+                </Badge>
+                <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
+                  {selectedNews.title}
+                </h1>
+              </div>
             </div>
           </div>
 
-          {/* Article Content */}
+          {/* Content */}
           <div className="container mx-auto px-4 py-8 md:py-12">
-            <div className="max-w-3xl mx-auto">
-              {/* Meta */}
-              <div className="flex flex-wrap items-center gap-4 mb-8 pb-4 border-b border-border text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
+            <div className="max-w-4xl mx-auto">
+              {/* Meta bar */}
+              <div className="flex flex-wrap items-center gap-4 mb-8 pb-6 border-b border-border">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
                   <Calendar className="h-4 w-4" />
                   {selectedNews.published_at && format(new Date(selectedNews.published_at), 'PPP', { locale: getLocale() })}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
                   <Eye className="h-4 w-4" />
                   {selectedNews.views_count} vues
                 </div>
+                <Button variant="ghost" size="sm" onClick={() => setShowShare(true)} className="ml-auto gap-2">
+                  <Share2 className="h-4 w-4" /> Partager
+                </Button>
               </div>
 
               {/* Excerpt */}
               {selectedNews.excerpt && (
-                <p className="text-lg md:text-xl text-muted-foreground italic mb-8 leading-relaxed border-l-4 border-primary pl-4">
+                <blockquote className="text-lg md:text-xl text-muted-foreground italic mb-10 leading-relaxed border-l-4 border-primary pl-6 py-2 bg-primary/5 rounded-r-lg">
                   {selectedNews.excerpt}
-                </p>
+                </blockquote>
               )}
 
-              {/* Content */}
-              {renderContent(selectedNews.content)}
+              {/* Article body */}
+              <article className="mb-12">
+                {renderContent(selectedNews.content)}
+              </article>
 
-              {/* Actions */}
-              <div className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              {/* Footer actions */}
+              <div className="pt-6 border-t border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <Button variant="outline" onClick={() => navigate('/news')}>
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Retour aux actualités
+                  <ArrowLeft className="h-4 w-4 mr-2" />Retour aux actualités
                 </Button>
                 <Button variant="ghost" onClick={() => setShowShare(true)} className="gap-2">
-                  <Share2 className="h-4 w-4" /> Partager
+                  <Share2 className="h-4 w-4" /> Partager cet article
                 </Button>
               </div>
             </div>
@@ -189,65 +201,63 @@ const News = () => {
         </main>
 
         <SocialSharePopup
-          open={showShare}
-          onClose={() => setShowShare(false)}
+          open={showShare} onClose={() => setShowShare(false)}
           url={`${window.location.origin}/news/${selectedNews.id}`}
           title={selectedNews.title}
           description={selectedNews.excerpt || selectedNews.content.substring(0, 150)}
           imageUrl={selectedNews.image_url || undefined}
-          shareType="news"
-          shareId={selectedNews.id}
+          shareType="news" shareId={selectedNews.id}
           cta="Lire l'article complet sur MIPROJET"
         />
-
         <Footer />
       </div>
     );
   }
 
-  // NEWS LIST PAGE
+  // ===== NEWS LIST PAGE =====
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navigation />
-      
       <main className="flex-1 pt-20">
         {/* Header */}
-        <section className="bg-gradient-to-r from-primary via-primary to-primary/90 py-12 md:py-16 text-primary-foreground relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-32 h-32 bg-secondary/20 rounded-full -translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 right-0 w-48 h-48 bg-secondary/10 rounded-full translate-x-1/4 translate-y-1/4" />
-          
-          <div className="container mx-auto px-4 text-left relative z-10">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3">
-              Actualités & Blog
-            </h1>
-            <p className="text-base md:text-lg text-primary-foreground/90 max-w-2xl">
-              {t('news.pageSubtitle')}
-            </p>
+        <section className="bg-gradient-to-br from-primary via-primary to-primary/90 py-14 md:py-20 text-primary-foreground relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-secondary/10 rounded-full translate-y-1/4 -translate-x-1/4" />
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 bg-white/10 rounded-xl backdrop-blur-sm">
+                <Newspaper className="h-8 w-8" />
+              </div>
+              <div>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">Actualités & Blog</h1>
+                <p className="text-primary-foreground/80 text-base md:text-lg mt-1">
+                  Restez informé des dernières nouvelles de l'écosystème entrepreneurial africain
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
         {/* Filters */}
-        <section className="py-6 border-b border-border bg-card">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col sm:flex-row gap-4">
+        <section className="sticky top-[64px] z-20 bg-card/95 backdrop-blur-sm border-b border-border shadow-sm">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder={t('news.searchPlaceholder') || "Rechercher..."}
+                  placeholder="Rechercher un article..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 text-base"
                 />
               </div>
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-full sm:w-48">
+                <SelectTrigger className="w-full sm:w-52">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map(cat => (
-                    <SelectItem key={cat.value} value={cat.value}>
-                      {cat.label}
-                    </SelectItem>
+                    <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -255,89 +265,121 @@ const News = () => {
           </div>
         </section>
 
-        {/* News Grid */}
-        <section className="py-10 md:py-12">
+        {/* Content */}
+        <section className="py-8 md:py-12">
           <div className="container mx-auto px-4">
             {loading ? (
-              <div className="flex items-center justify-center py-20">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+              <div className="flex items-center justify-center py-24">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary" />
               </div>
             ) : filteredNews.length === 0 ? (
-              <div className="text-center py-20">
-                <p className="text-muted-foreground text-lg">
-                  {t('news.noNews') || 'Aucune actualité disponible pour le moment'}
-                </p>
+              <div className="text-center py-24">
+                <Newspaper className="h-16 w-16 mx-auto text-muted-foreground/30 mb-4" />
+                <p className="text-muted-foreground text-lg">Aucune actualité disponible pour le moment</p>
               </div>
             ) : (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                {filteredNews.map((item, index) => {
-                  const imageUrl = item.image_url || defaultImages[index % defaultImages.length];
-                  
-                  return (
-                    <article 
-                      key={item.id} 
-                      onClick={() => navigate(`/news/${item.id}`)}
-                      className="group relative bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-2 border border-border"
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
-                      <div className="absolute top-0 left-0 w-2/3 h-1 bg-gradient-to-r from-primary to-primary/50 z-20" />
-                      <div className="absolute bottom-0 right-0 w-2/3 h-1 bg-gradient-to-l from-secondary to-secondary/50 z-20" />
-                      
-                      <div className="aspect-video overflow-hidden relative">
-                        {imageUrl ? (
-                          <img
-                            src={imageUrl}
-                            alt={item.title}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            onError={(e) => { (e.target as HTMLImageElement).src = defaultImages[index % defaultImages.length]; }}
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-muted flex items-center justify-center">
-                            <ImageOff className="h-12 w-12 text-muted-foreground/40" />
+              <div className="space-y-10">
+                {/* Featured article - Hero card */}
+                {featuredNews.length > 0 && (
+                  <div className="mb-8">
+                    {featuredNews.slice(0, 1).map((item) => {
+                      const img = item.image_url || defaultImages[0];
+                      return (
+                        <article key={item.id} onClick={() => navigate(`/news/${item.id}`)}
+                          className="group relative grid md:grid-cols-2 gap-0 bg-card rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer border border-border">
+                          <div className="aspect-video md:aspect-auto md:h-full overflow-hidden">
+                            <img src={img} alt={item.title}
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                              onError={(e) => { (e.target as HTMLImageElement).src = defaultImages[0]; }} />
                           </div>
-                        )}
-                        <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
-                          <Badge className="bg-primary text-primary-foreground shadow-lg text-xs">
-                            {categories.find(c => c.value === item.category)?.label || item.category}
-                          </Badge>
-                          <div className="flex items-center gap-1 text-xs bg-black/50 text-white px-2 py-1 rounded-full">
-                            <Eye className="h-3 w-3" />
-                            {item.views_count}
+                          <div className="p-6 md:p-10 flex flex-col justify-center">
+                            <div className="flex items-center gap-2 mb-4">
+                              <Badge className="bg-primary text-primary-foreground">
+                                {categories.find(c => c.value === item.category)?.label || item.category}
+                              </Badge>
+                              <Badge variant="outline" className="text-xs border-amber-500 text-amber-600">
+                                <TrendingUp className="h-3 w-3 mr-1" />À la une
+                              </Badge>
+                            </div>
+                            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground group-hover:text-primary transition-colors mb-4 leading-tight text-left">
+                              {item.title}
+                            </h2>
+                            <p className="text-muted-foreground text-base leading-relaxed mb-6 line-clamp-3 text-left">
+                              {item.excerpt || item.content.substring(0, 200)}...
+                            </p>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                                <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" />
+                                  {item.published_at && formatDistanceToNow(new Date(item.published_at), { addSuffix: true, locale: getLocale() })}
+                                </span>
+                                <span className="flex items-center gap-1"><Eye className="h-3.5 w-3.5" />{item.views_count}</span>
+                              </div>
+                              <span className="text-primary font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
+                                Lire <ArrowRight className="h-4 w-4" />
+                              </span>
+                            </div>
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Regular news grid */}
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                  {(featuredNews.length > 0 ? [...featuredNews.slice(1), ...regularNews] : regularNews).map((item, index) => {
+                    const imageUrl = item.image_url || defaultImages[index % defaultImages.length];
+                    return (
+                      <article key={item.id} onClick={() => navigate(`/news/${item.id}`)}
+                        className="group relative bg-card rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 border border-border flex flex-col">
+                        {/* Image */}
+                        <div className="aspect-[16/10] overflow-hidden relative">
+                          {imageUrl ? (
+                            <img src={imageUrl} alt={item.title}
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                              onError={(e) => { (e.target as HTMLImageElement).src = defaultImages[index % defaultImages.length]; }} />
+                          ) : (
+                            <div className="w-full h-full bg-muted flex items-center justify-center">
+                              <ImageOff className="h-12 w-12 text-muted-foreground/30" />
+                            </div>
+                          )}
+                          <div className="absolute top-3 left-3">
+                            <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm text-xs">
+                              {categories.find(c => c.value === item.category)?.label || item.category}
+                            </Badge>
                           </div>
                         </div>
-                      </div>
-                      
-                      <div className="p-5">
-                        <h3 className="font-bold text-lg text-foreground line-clamp-2 mb-2 group-hover:text-primary transition-colors text-left">
-                          {item.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground line-clamp-3 mb-4 text-left">
-                          {item.excerpt || item.content.substring(0, 150)}...
-                        </p>
-                        
-                        <div className="flex items-center justify-between pt-3 border-t border-border">
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <Clock className="h-3.5 w-3.5" />
-                            {item.published_at && formatDistanceToNow(new Date(item.published_at), {
-                              addSuffix: true,
-                              locale: getLocale(),
-                            })}
+
+                        {/* Body */}
+                        <div className="p-5 flex flex-col flex-1">
+                          <h3 className="font-bold text-base text-foreground line-clamp-2 mb-2 group-hover:text-primary transition-colors text-left leading-snug">
+                            {item.title}
+                          </h3>
+                          <p className="text-sm text-muted-foreground line-clamp-3 mb-4 text-left flex-1">
+                            {item.excerpt || item.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
+                          </p>
+                          <div className="flex items-center justify-between pt-3 border-t border-border">
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <Clock className="h-3.5 w-3.5" />
+                              {item.published_at && formatDistanceToNow(new Date(item.published_at), { addSuffix: true, locale: getLocale() })}
+                            </div>
+                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                              <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{item.views_count}</span>
+                              <span className="text-primary font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
+                                Lire <ArrowRight className="h-3.5 w-3.5" />
+                              </span>
+                            </div>
                           </div>
-                          <span className="text-primary text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
-                            {t('common.readMore') || 'Lire'}
-                            <ArrowRight className="h-4 w-4" />
-                          </span>
                         </div>
-                      </div>
-                    </article>
-                  );
-                })}
+                      </article>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>
         </section>
       </main>
-
       <Footer />
     </div>
   );

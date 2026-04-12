@@ -34,46 +34,6 @@ RÈGLES:
 - Sois concis mais complet
 - Rappelle que MIPROJET ne finance pas directement mais oriente vers des partenaires`;
 
-const AI_CONTENT_SYSTEM = `Tu es un rédacteur professionnel expert pour MIPROJET, plateforme panafricaine.
-
-CAPACITÉ CLÉ: Tu peux générer du contenu complet et professionnel à partir d'un SEUL mot, d'une émotion, ou d'une idée brève.
-
-EXEMPLES D'ENTRÉES MINIMALES:
-- "partenariat" → Article complet sur un nouveau partenariat stratégique
-- "formation" → Article sur un programme de formation MIPROJET
-- "succès" → Témoignage de réussite d'un porteur de projet
-- "Bonne nouvelle" → Annonce positive structurée
-- "agriculture" → Article sur les opportunités dans l'agriculture
-
-RÈGLES CRITIQUES:
-1. NE JAMAIS utiliser de balises HTML, Markdown, symboles techniques
-2. Le texte doit sembler 100% écrit par un humain professionnel
-3. TITRE en MAJUSCULES (max 80 caractères, percutant)
-4. Utiliser des emojis pertinents pour les sous-titres: 🚀 📌 💡 🎯 ✅ 📊 💰 🌍
-5. Paragraphes courts, aérés, faciles à lire sur mobile
-6. Phrases fluides, naturelles, jamais robotiques
-7. Hashtags en fin de contenu: #MIPROJET #Entrepreneuriat #Afrique + hashtags contextuels
-8. Contact MIPROJET en fin: infos@ivoireprojet.com | +225 07 16 79 21
-
-STRUCTURE DU CONTENU:
-🚀 TITRE ACCROCHEUR
-
-Phrase d'introduction percutante qui donne envie de lire.
-
-📌 SECTION 1
-Contenu développé, informatif, engageant.
-
-🎯 SECTION 2
-Détails, arguments, données.
-
-✅ CONCLUSION OU APPEL À L'ACTION
-Synthèse et invitation.
-
-📧 CONTACT
-MIPROJET | infos@ivoireprojet.com | +225 07 16 79 21
-
-#MIPROJET #Entrepreneuriat #Afrique`;
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -100,11 +60,11 @@ serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash-image",
+          model: "google/gemini-3.1-flash-image-preview",
           messages: [
             {
               role: "user",
-              content: `Generate a professional, ultra-realistic, high-resolution image for a social media publication about: ${topic}. The image should be clean, modern, professional, suitable for a business platform. No watermarks, no text overlay, no logos. Corporate African business aesthetic.`
+              content: `Generate a professional, ultra-realistic, high-resolution photograph for an article about: ${topic}. Style: photojournalistic, real African business context, natural lighting, authentic people in professional settings. NO text, NO watermarks, NO logos, NO artificial elements. The image must look like a real photograph taken by a professional photographer in Africa.`
             }
           ],
           modalities: ["image", "text"]
@@ -122,13 +82,11 @@ serve(async (req) => {
       const imageUrl = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
       
       if (imageUrl) {
-        // Upload to Supabase storage
         const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
         const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
         const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
         const supabase = createClient(supabaseUrl, supabaseKey);
 
-        // Convert base64 to blob
         const base64Data = imageUrl.replace(/^data:image\/\w+;base64,/, "");
         const binaryString = atob(base64Data);
         const bytes = new Uint8Array(binaryString.length);
@@ -143,7 +101,6 @@ serve(async (req) => {
 
         if (uploadError) {
           console.error("Upload error:", uploadError);
-          // Return base64 directly as fallback
           return new Response(JSON.stringify({ image_url: imageUrl }), {
             headers: { ...corsHeaders, "Content-Type": "application/json" }
           });
@@ -182,13 +139,7 @@ serve(async (req) => {
             { 
               role: "system", 
               content: `Tu es un expert en veille d'opportunités pour MIPROJET, plateforme panafricaine.
-
-CAPACITÉ CLÉ: Tu peux générer une fiche d'opportunité complète même à partir d'un SEUL MOT.
-
 TYPE D'OPPORTUNITÉ: ${typeLabels[opportunityType] || opportunityType}
-
-${AI_CONTENT_SYSTEM}
-
 Réponds UNIQUEMENT en JSON valide:
 {
   "title": "TITRE EN MAJUSCULES (max 80 car)",
@@ -229,7 +180,7 @@ Réponds UNIQUEMENT en JSON valide:
       return new Response(JSON.stringify({
         title: content.toUpperCase().substring(0, 80),
         description: `Opportunité de ${typeLabels[opportunityType]} - ${content}`,
-        content: `🚀 ${content.toUpperCase()}\n\nOpportunité de ${typeLabels[opportunityType]} disponible.\n\n📧 CONTACT MIPROJET\n- Email : infos@ivoireprojet.com\n- Tél : +225 07 16 79 21\n\n#MIPROJET #Opportunité`,
+        content: `🚀 ${content.toUpperCase()}\n\nOpportunité disponible.\n\n📧 CONTACT\ninfos@ivoireprojet.com | +225 07 16 79 21\n\n#MIPROJET #Opportunité`,
         category: "general",
         eligibility: "Porteurs de projets en Afrique",
         location: "Afrique de l'Ouest",
@@ -253,14 +204,12 @@ Réponds UNIQUEMENT en JSON valide:
           messages: [
             { 
               role: "system", 
-              content: `${AI_CONTENT_SYSTEM}
-
-CATÉGORIES: general, events, projects, partnerships, training, opportunities, funding
-
+              content: `Tu es un rédacteur professionnel pour MIPROJET, plateforme panafricaine.
+Catégories: general, events, projects, partnerships, training, opportunities, funding
 Réponds UNIQUEMENT en JSON valide:
 {
-  "title": "TITRE ACCROCHEUR EN MAJUSCULES (max 80 caractères)",
-  "excerpt": "Résumé court et percutant (150-200 caractères)",
+  "title": "TITRE ACCROCHEUR EN MAJUSCULES (max 80 car)",
+  "excerpt": "Résumé court et percutant (150-200 car)",
   "content": "Contenu formaté professionnel avec emojis et sections",
   "category": "catégorie détectée"
 }`
@@ -314,7 +263,6 @@ Réponds UNIQUEMENT en JSON valide:
             { 
               role: "system", 
               content: `Tu es un expert en évaluation de projets pour MIPROJET. Génère une évaluation professionnelle.
-
 Réponds UNIQUEMENT en JSON valide:
 {
   "resume": "Résumé exécutif (2-3 phrases)",
@@ -354,10 +302,9 @@ Réponds UNIQUEMENT en JSON valide:
       }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // ===== ARTICLE HTML GENERATION (WYSIWYG) =====
+    // ===== ARTICLE HTML GENERATION (WYSIWYG) - ENHANCED =====
     if (action === 'generate_article_html' || action === 'generate_universal_content') {
       const content = body.content || "";
-      const contentType = body.content_type || "article";
       
       const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
@@ -370,40 +317,79 @@ Réponds UNIQUEMENT en JSON valide:
           messages: [
             { 
               role: "system", 
-              content: `Tu es un rédacteur professionnel pour MIPROJET, plateforme panafricaine de structuration de projets.
+              content: `Tu es un rédacteur en chef professionnel pour MIPROJET, plateforme panafricaine de structuration de projets.
 
 CAPACITÉ CLÉ: À partir d'un SEUL MOT ou d'une phrase, tu génères un article complet, structuré et professionnel.
 
-RÈGLES DE RÉDACTION:
-- Ton journalistique, factuel, sobre et respectueux
+RÈGLES DE RÉDACTION CRITIQUES:
+- Ton journalistique, factuel, sobre et respectueux des institutions
 - Jamais détectable comme généré par IA
 - Pas de superlatifs excessifs ni de formules creuses
-- Contenu immédiatement publiable
+- Contenu immédiatement publiable sur un site professionnel
+- Minimum 800 mots, maximum 2000 mots
+- Chaque section doit avoir au moins 2 paragraphes bien développés
 
-FORMAT DE SORTIE: JSON valide avec du HTML propre pour le champ content.
+FORMAT HTML OBLIGATOIRE:
+Le contenu DOIT être du HTML propre et bien structuré:
 
-Le HTML doit utiliser: <h2>, <h3>, <p>, <strong>, <em>, <ul><li>, <ol><li>, <blockquote>, <table>, <hr>.
-- Titres h2 pour les sections principales
-- Paragraphes bien aérés
-- Tableaux comparatifs si le sujet le justifie (avec <thead> stylé)
-- Listes à puces pour les points clés
-- Citations pour les éléments importants
-- PAS de balises <h1> (réservé au titre)
-- PAS de classes CSS ni de styles inline
+1. STRUCTURE:
+   - <h2> pour les titres de sections (jamais de <h1>)
+   - <h3> pour les sous-sections
+   - <p> pour chaque paragraphe (TOUJOURS séparer les paragraphes avec des balises <p>)
+   - <strong> pour les mots-clés importants dans le texte
+   - <em> pour les citations ou termes techniques
 
-Catégories: general, events, projects, partnerships, training, opportunities, funding
+2. MISE EN FORME:
+   - <ul><li> ou <ol><li> pour les listes à puces/numérotées
+   - <blockquote> pour les citations ou points importants
+   - <table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table> pour les tableaux comparatifs
+   - <hr> pour séparer les grandes sections
+
+3. STRUCTURE TYPE:
+   <h2>Introduction contextuelle</h2>
+   <p>Premier paragraphe d'introduction...</p>
+   <p>Deuxième paragraphe avec contexte...</p>
+
+   <h2>Section principale 1</h2>
+   <p>Développement détaillé...</p>
+   <p>Suite du développement...</p>
+
+   <h3>Sous-section si nécessaire</h3>
+   <p>Détails supplémentaires...</p>
+   <ul><li>Point important 1</li><li>Point important 2</li></ul>
+
+   <h2>Section principale 2</h2>
+   <p>Contenu développé...</p>
+
+   <blockquote>Citation ou point clé à retenir</blockquote>
+
+   <h2>Conclusion et perspectives</h2>
+   <p>Synthèse...</p>
+
+   <hr>
+   <p><em>MIPROJET – Plateforme Panafricaine de Structuration de Projets</em></p>
+   <p><em>📧 infos@ivoireprojet.com | 📞 +225 07 16 79 21 | 🌐 ivoireprojet.com</em></p>
+
+4. INTERDICTIONS:
+   - PAS de classes CSS ni de styles inline
+   - PAS de <h1>
+   - PAS de balises <div>
+   - PAS de Markdown
+   - PAS d'emojis dans les titres h2/h3 (mais OK dans le texte)
+
+Catégories disponibles: general, events, projects, partnerships, training, opportunities, funding
 
 Réponds UNIQUEMENT en JSON valide:
 {
-  "title": "TITRE EN MAJUSCULES (max 80 car, percutant)",
-  "excerpt": "Phrase d'accroche courte et engageante (max 200 car)",
-  "content": "<h2>Section 1</h2><p>Contenu...</p>...",
-  "category": "catégorie détectée"
+  "title": "TITRE EN MAJUSCULES ACCROCHEUR (max 80 caractères)",
+  "excerpt": "Résumé éditorial en une phrase percutante (max 200 caractères)",
+  "content": "<h2>...</h2><p>...</p>...",
+  "category": "catégorie la plus pertinente"
 }`
             },
-            { role: "user", content: `Génère un article professionnel complet à partir de:\n${content}` }
+            { role: "user", content: `Rédige un article professionnel complet et structuré à partir de:\n${content}` }
           ],
-          max_tokens: 3000,
+          max_tokens: 4000,
         }),
       });
 
@@ -434,13 +420,11 @@ Réponds UNIQUEMENT en JSON valide:
     if (action === 'send_whatsapp') {
       const { phone, message, notification_type } = body;
       
-      // Log the notification attempt
       const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
       const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
       const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
       const supabase = createClient(supabaseUrl, supabaseKey);
 
-      // Generate personalized message with AI
       const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -456,7 +440,7 @@ Réponds UNIQUEMENT en JSON valide:
 Le message doit commencer par: "📢 [MIPROJET - Message automatique]"
 Suivi de: "⚠️ Ceci est un message automatique, merci de ne pas répondre."
 Puis le contenu personnalisé.
-Le message doit être court (max 500 caractères), professionnel et engageant.
+Court (max 500 car), professionnel.
 Terminer par: "MIPROJET | ivoireprojet.com | +225 07 16 79 21"`
             },
             { role: "user", content: `Type: ${notification_type}\nContenu: ${message}` }
@@ -471,7 +455,6 @@ Terminer par: "MIPROJET | ivoireprojet.com | +225 07 16 79 21"`
         finalMessage = aiData.choices?.[0]?.message?.content || message;
       }
 
-      // Log to notifications table
       if (body.user_id) {
         await supabase.from('notifications').insert({
           user_id: body.user_id,
@@ -482,7 +465,6 @@ Terminer par: "MIPROJET | ivoireprojet.com | +225 07 16 79 21"`
         });
       }
 
-      // WhatsApp Business API call (if configured)
       const WHATSAPP_TOKEN = Deno.env.get("WHATSAPP_BUSINESS_TOKEN");
       const WHATSAPP_PHONE_ID = Deno.env.get("WHATSAPP_PHONE_NUMBER_ID");
       
@@ -514,11 +496,9 @@ Terminer par: "MIPROJET | ivoireprojet.com | +225 07 16 79 21"`
         }
       }
 
-      // Return success even without WhatsApp API (notification logged)
       return new Response(JSON.stringify({ 
-        success: true, 
-        whatsapp_sent: false, 
-        message: "Notification enregistrée. WhatsApp Business API non configurée.",
+        success: true, whatsapp_sent: false, 
+        message: "Notification enregistrée.",
         generated_message: finalMessage
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" }
@@ -530,11 +510,11 @@ Terminer par: "MIPROJET | ivoireprojet.com | +225 07 16 79 21"`
       const { template_type, variables } = body;
       
       const templates: Record<string, string> = {
-        welcome: `Génère un email de bienvenue pour un nouvel inscrit sur MIPROJET. Nom: ${variables?.name || 'Membre'}. Email professionnel, chaleureux.`,
-        payment_success: `Génère un email de confirmation de paiement. Plan: ${variables?.plan || 'Premium'}. Montant: ${variables?.amount || '30 000'} FCFA. Email formel avec récapitulatif.`,
-        new_opportunity: `Génère un email d'alerte pour une nouvelle opportunité. Titre: ${variables?.title || 'Opportunité'}. Description: ${variables?.description || ''}. Email engageant avec CTA.`,
-        password_reset: `Génère un email de réinitialisation de mot de passe pour MIPROJET. Court, sécurisé, professionnel.`,
-        subscription_expiry: `Génère un email d'alerte expiration d'abonnement. Plan: ${variables?.plan || 'Standard'}. Date: ${variables?.date || 'bientôt'}. Incitatif au renouvellement.`,
+        welcome: `Génère un email de bienvenue pour un nouvel inscrit sur MIPROJET. Nom: ${variables?.name || 'Membre'}.`,
+        payment_success: `Génère un email de confirmation de paiement. Plan: ${variables?.plan || 'Premium'}. Montant: ${variables?.amount || '30 000'} FCFA.`,
+        new_opportunity: `Génère un email d'alerte pour une nouvelle opportunité. Titre: ${variables?.title || 'Opportunité'}.`,
+        password_reset: `Génère un email de réinitialisation de mot de passe.`,
+        subscription_expiry: `Génère un email d'alerte expiration d'abonnement. Plan: ${variables?.plan || 'Standard'}.`,
       };
       
       const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -549,13 +529,9 @@ Terminer par: "MIPROJET | ivoireprojet.com | +225 07 16 79 21"`
             { 
               role: "system", 
               content: `Tu es le rédacteur d'emails pour MIPROJET.
-Génère des emails HTML professionnels avec:
-- Logo MIPROJET en haut
-- Design sobre, couleur primaire #1a365d
-- Bouton CTA vert #38a169
-- Footer: MIPROJET | infos@ivoireprojet.com | +225 07 16 79 21 | ivoireprojet.com
-- Responsive
-Réponds en JSON: { "subject": "Objet de l'email", "html": "Contenu HTML complet" }`
+Génère des emails HTML professionnels avec design sobre, couleur #1a365d, bouton CTA vert #38a169.
+Footer: MIPROJET | infos@ivoireprojet.com | +225 07 16 79 21
+Réponds en JSON: { "subject": "Objet", "html": "HTML complet" }`
             },
             { role: "user", content: templates[template_type] || `Génère un email professionnel: ${template_type}` }
           ],
@@ -604,7 +580,6 @@ Réponds en JSON: { "subject": "Objet de l'email", "html": "Contenu HTML complet
           ...messages,
         ],
         stream: true,
-        max_tokens: 1024,
       }),
     });
 
