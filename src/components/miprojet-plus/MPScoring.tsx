@@ -24,28 +24,76 @@ const AXES = [
   { key: "juridique", label: "Juridique & Gouvernance", max: 15, color: "bg-blue-500" },
   { key: "financier", label: "Financier", max: 25, color: "bg-emerald-500" },
   { key: "technique", label: "Technique & Opérationnel", max: 20, color: "bg-amber-500" },
-  { key: "marche", label: "Marché & Modèle", max: 20, color: "bg-purple-500" },
-  { key: "impact", label: "Impact & Durabilité", max: 20, color: "bg-rose-500" },
+  { key: "marche", label: "Marché & Modèle économique", max: 20, color: "bg-purple-500" },
+  { key: "impact", label: "Impact, Risques & Durabilité", max: 20, color: "bg-rose-500" },
 ];
 
-const QUESTIONS: Question[] = [
-  { id: "j1", axis: "juridique", question: "Votre activité est-elle formellement enregistrée ?", options: [{ label: "Non", value: 0 }, { label: "En cours", value: 2 }, { label: "Oui, enregistrée", value: 5 }], maxPoints: 5 },
-  { id: "j2", axis: "juridique", question: "Disposez-vous de statuts ou d'un règlement intérieur ?", options: [{ label: "Non", value: 0 }, { label: "En cours de rédaction", value: 2 }, { label: "Oui, formalisés", value: 5 }], maxPoints: 5 },
-  { id: "j3", axis: "juridique", question: "Avez-vous une gouvernance claire (organigramme, rôles) ?", options: [{ label: "Non", value: 0 }, { label: "Partiellement", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
-  { id: "f1", axis: "financier", question: "Tenez-vous une comptabilité régulière ?", options: [{ label: "Non", value: 0 }, { label: "Informelle", value: 3 }, { label: "Oui, formalisée", value: 7 }], maxPoints: 7 },
-  { id: "f2", axis: "financier", question: "Avez-vous un compte bancaire dédié à l'activité ?", options: [{ label: "Non", value: 0 }, { label: "Mobile money uniquement", value: 3 }, { label: "Oui, compte bancaire", value: 6 }], maxPoints: 6 },
-  { id: "f3", axis: "financier", question: "Pouvez-vous justifier vos revenus des 6 derniers mois ?", options: [{ label: "Non", value: 0 }, { label: "Partiellement", value: 3 }, { label: "Oui, documents à l'appui", value: 6 }], maxPoints: 6 },
-  { id: "f4", axis: "financier", question: "Avez-vous un plan financier ou budget prévisionnel ?", options: [{ label: "Non", value: 0 }, { label: "Ébauche", value: 3 }, { label: "Oui, détaillé", value: 6 }], maxPoints: 6 },
-  { id: "t1", axis: "technique", question: "Avez-vous un lieu d'exploitation fixe ?", options: [{ label: "Non", value: 0 }, { label: "Temporaire", value: 3 }, { label: "Oui, fixe", value: 5 }], maxPoints: 5 },
-  { id: "t2", axis: "technique", question: "Disposez-vous d'équipements adaptés ?", options: [{ label: "Non", value: 0 }, { label: "Insuffisants", value: 3 }, { label: "Oui, adaptés", value: 5 }], maxPoints: 5 },
-  { id: "t3", axis: "technique", question: "Avez-vous du personnel qualifié ?", options: [{ label: "Seul", value: 0 }, { label: "Quelques aides", value: 3 }, { label: "Équipe qualifiée", value: 5 }], maxPoints: 5 },
-  { id: "t4", axis: "technique", question: "Avez-vous des processus de production documentés ?", options: [{ label: "Non", value: 0 }, { label: "Partiellement", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
-  { id: "m1", axis: "marche", question: "Connaissez-vous votre marché cible ?", options: [{ label: "Non", value: 0 }, { label: "Vaguement", value: 3 }, { label: "Oui, étude réalisée", value: 7 }], maxPoints: 7 },
-  { id: "m2", axis: "marche", question: "Avez-vous une clientèle régulière ?", options: [{ label: "Non", value: 0 }, { label: "Quelques clients", value: 3 }, { label: "Oui, fidélisée", value: 7 }], maxPoints: 7 },
-  { id: "m3", axis: "marche", question: "Votre modèle économique est-il rentable ?", options: [{ label: "Déficitaire", value: 0 }, { label: "Équilibre", value: 3 }, { label: "Rentable", value: 6 }], maxPoints: 6 },
-  { id: "i1", axis: "impact", question: "Votre activité crée-t-elle des emplois ?", options: [{ label: "Non", value: 0 }, { label: "1-2 emplois", value: 3 }, { label: "3+ emplois", value: 7 }], maxPoints: 7 },
-  { id: "i2", axis: "impact", question: "Avez-vous un impact social ou environnemental positif ?", options: [{ label: "Non", value: 0 }, { label: "Indirect", value: 3 }, { label: "Oui, mesurable", value: 7 }], maxPoints: 7 },
-  { id: "i3", axis: "impact", question: "Votre activité est-elle durable à long terme ?", options: [{ label: "Incertain", value: 0 }, { label: "Probable", value: 3 }, { label: "Oui, plan de durabilité", value: 6 }], maxPoints: 6 },
+// ===== SCORING STARTUP (Cahier des charges 5.1) =====
+const QUESTIONS_STARTUP: Question[] = [
+  // AXE 1 : JURIDIQUE & GOUVERNANCE (15 pts)
+  { id: "sj1", axis: "juridique", question: "Avez-vous une équipe définie ?", options: [{ label: "Non", value: 0 }, { label: "Partiellement", value: 1 }, { label: "Oui", value: 3 }], maxPoints: 3 },
+  { id: "sj2", axis: "juridique", question: "Les rôles sont-ils clairs ?", options: [{ label: "Non", value: 0 }, { label: "Partiellement", value: 1 }, { label: "Oui", value: 3 }], maxPoints: 3 },
+  { id: "sj3", axis: "juridique", question: "Le projet est-il enregistré ou en cours ?", options: [{ label: "Non", value: 0 }, { label: "En cours", value: 1 }, { label: "Oui", value: 3 }], maxPoints: 3 },
+  { id: "sj4", axis: "juridique", question: "Avez-vous une vision claire du projet ?", options: [{ label: "Non", value: 0 }, { label: "Moyenne", value: 1 }, { label: "Oui", value: 3 }], maxPoints: 3 },
+  { id: "sj5", axis: "juridique", question: "Engagement du porteur (temps, implication) ?", options: [{ label: "Faible", value: 0 }, { label: "Moyen", value: 1 }, { label: "Fort", value: 3 }], maxPoints: 3 },
+  // AXE 2 : FINANCIER (25 pts)
+  { id: "sf1", axis: "financier", question: "Avez-vous estimé vos coûts ?", options: [{ label: "Non", value: 0 }, { label: "Partiellement", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
+  { id: "sf2", axis: "financier", question: "Avez-vous estimé vos revenus futurs ?", options: [{ label: "Non", value: 0 }, { label: "Approximatif", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
+  { id: "sf3", axis: "financier", question: "Avez-vous un besoin de financement clair ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
+  { id: "sf4", axis: "financier", question: "Savez-vous comment générer de l'argent ?", options: [{ label: "Non", value: 0 }, { label: "Peu clair", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
+  { id: "sf5", axis: "financier", question: "Avez-vous une projection financière simple ?", options: [{ label: "Non", value: 0 }, { label: "Partielle", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
+  // AXE 3 : TECHNIQUE & OPÉRATIONNEL (20 pts)
+  { id: "st1", axis: "technique", question: "Avez-vous les compétences nécessaires ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
+  { id: "st2", axis: "technique", question: "Avez-vous identifié les ressources nécessaires ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
+  { id: "st3", axis: "technique", question: "Avez-vous un plan d'action ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  { id: "st4", axis: "technique", question: "Avez-vous commencé des actions concrètes ?", options: [{ label: "Non", value: 0 }, { label: "Peu", value: 2 }, { label: "Oui", value: 3 }], maxPoints: 3 },
+  { id: "st5", axis: "technique", question: "Le projet est-il réalisable ?", options: [{ label: "Non", value: 0 }, { label: "Incertain", value: 1 }, { label: "Oui", value: 3 }], maxPoints: 3 },
+  // AXE 4 : MARCHÉ & MODÈLE ÉCONOMIQUE (20 pts)
+  { id: "sm1", axis: "marche", question: "Le problème est-il clairement identifié ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  { id: "sm2", axis: "marche", question: "La solution est-elle claire ?", options: [{ label: "Non", value: 0 }, { label: "Moyenne", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  { id: "sm3", axis: "marche", question: "Connaissez-vous vos clients ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  { id: "sm4", axis: "marche", question: "Existe-t-il une demande ?", options: [{ label: "Non", value: 0 }, { label: "Incertaine", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  { id: "sm5", axis: "marche", question: "Avez-vous un modèle économique ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  // AXE 5 : IMPACT, RISQUES & DURABILITÉ (20 pts)
+  { id: "si1", axis: "impact", question: "Le projet a-t-il un impact positif ?", options: [{ label: "Non", value: 0 }, { label: "Faible", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
+  { id: "si2", axis: "impact", question: "Avez-vous identifié les risques ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  { id: "si3", axis: "impact", question: "Avez-vous prévu des solutions aux risques ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  { id: "si4", axis: "impact", question: "Le projet peut-il évoluer (scalabilité) ?", options: [{ label: "Non", value: 0 }, { label: "Incertain", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  { id: "si5", axis: "impact", question: "Le projet peut-il attirer des investisseurs ?", options: [{ label: "Non", value: 0 }, { label: "Peut-être", value: 2 }, { label: "Oui", value: 3 }], maxPoints: 3 },
+];
+
+// ===== SCORING ACTIVITÉ EXISTANTE (Cahier des charges 5.2) =====
+const QUESTIONS_ACTIVITE: Question[] = [
+  // AXE 1 : JURIDIQUE & GOUVERNANCE (15 pts)
+  { id: "aj1", axis: "juridique", question: "Activité enregistrée officiellement ?", options: [{ label: "Non", value: 0 }, { label: "En cours", value: 1 }, { label: "Oui", value: 3 }], maxPoints: 3 },
+  { id: "aj2", axis: "juridique", question: "Documents administratifs disponibles ?", options: [{ label: "Non", value: 0 }, { label: "Partiellement", value: 1 }, { label: "Oui", value: 3 }], maxPoints: 3 },
+  { id: "aj3", axis: "juridique", question: "Rôles et responsabilités définis ?", options: [{ label: "Non", value: 0 }, { label: "Partiellement", value: 1 }, { label: "Oui", value: 3 }], maxPoints: 3 },
+  { id: "aj4", axis: "juridique", question: "Adresse / localisation claire ?", options: [{ label: "Non", value: 0 }, { label: "Partiellement", value: 1 }, { label: "Oui", value: 3 }], maxPoints: 3 },
+  { id: "aj5", axis: "juridique", question: "Conformité réglementaire ?", options: [{ label: "Non", value: 0 }, { label: "Partiellement", value: 1 }, { label: "Oui", value: 3 }], maxPoints: 3 },
+  // AXE 2 : FINANCIER (25 pts)
+  { id: "af1", axis: "financier", question: "Suivi des revenus / dépenses ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
+  { id: "af2", axis: "financier", question: "Bénéfice mensuel estimé ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
+  { id: "af3", axis: "financier", question: "Revenus réguliers ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
+  { id: "af4", axis: "financier", question: "Besoin de financement structuré ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
+  { id: "af5", axis: "financier", question: "Gestion financière claire ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
+  // AXE 3 : TECHNIQUE & OPÉRATIONNEL (20 pts)
+  { id: "at1", axis: "technique", question: "Compétences pour gérer l'activité ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
+  { id: "at2", axis: "technique", question: "Ressources disponibles ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
+  { id: "at3", axis: "technique", question: "Plan d'action clair ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  { id: "at4", axis: "technique", question: "Activité prête à fonctionner ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 3 }], maxPoints: 3 },
+  { id: "at5", axis: "technique", question: "Organisation structurée ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 1 }, { label: "Oui", value: 3 }], maxPoints: 3 },
+  // AXE 4 : MARCHÉ & MODÈLE ÉCONOMIQUE (20 pts)
+  { id: "am1", axis: "marche", question: "Problème réel identifié ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  { id: "am2", axis: "marche", question: "Connaissance des clients ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  { id: "am3", axis: "marche", question: "Existence d'une demande ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  { id: "am4", axis: "marche", question: "Avantage concurrentiel ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  { id: "am5", axis: "marche", question: "Stratégie commerciale ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  // AXE 5 : IMPACT, RISQUES & DURABILITÉ (20 pts)
+  { id: "ai1", axis: "impact", question: "Impact positif ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 5 }], maxPoints: 5 },
+  { id: "ai2", axis: "impact", question: "Risques identifiés ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  { id: "ai3", axis: "impact", question: "Solutions prévues ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  { id: "ai4", axis: "impact", question: "Durabilité de l'activité ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 4 }], maxPoints: 4 },
+  { id: "ai5", axis: "impact", question: "Attractivité pour investisseurs ?", options: [{ label: "Non", value: 0 }, { label: "Partiel", value: 2 }, { label: "Oui", value: 3 }], maxPoints: 3 },
 ];
 
 interface MPScoringProps {
@@ -55,20 +103,23 @@ interface MPScoringProps {
 const MPScoring = ({ onBack }: MPScoringProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const [scoringType, setScoringType] = useState<"startup" | "activite" | null>(null);
   const [currentAxisIdx, setCurrentAxisIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [selectedProject, setSelectedProject] = useState("");
-  const [projects, setProjects] = useState<{ id: string; title: string }[]>([]);
+  const [projects, setProjects] = useState<{ id: string; title: string; activity_type: string | null }[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [saving, setSaving] = useState(false);
   const [existingResults, setExistingResults] = useState<any[]>([]);
   const [showResultPopup, setShowResultPopup] = useState(false);
   const [lastScoreResult, setLastScoreResult] = useState<any>(null);
 
+  const QUESTIONS = scoringType === "startup" ? QUESTIONS_STARTUP : QUESTIONS_ACTIVITE;
+
   useEffect(() => {
     if (!user) return;
     const fetchProjects = async () => {
-      const { data } = await supabase.from("mp_projects").select("id, title").eq("user_id", user.id);
+      const { data } = await supabase.from("mp_projects").select("id, title, activity_type").eq("user_id", user.id);
       if (data) setProjects(data);
     };
     const fetchResults = async () => {
@@ -78,6 +129,19 @@ const MPScoring = ({ onBack }: MPScoringProps) => {
     fetchProjects();
     fetchResults();
   }, [user]);
+
+  // Auto-detect scoring type based on project activity_type
+  useEffect(() => {
+    if (!selectedProject) return;
+    const project = projects.find(p => p.id === selectedProject);
+    if (project?.activity_type === "startup") {
+      setScoringType("startup");
+    } else {
+      setScoringType("activite");
+    }
+    setAnswers({});
+    setCurrentAxisIdx(0);
+  }, [selectedProject, projects]);
 
   const currentAxis = AXES[currentAxisIdx];
   const axisQuestions = QUESTIONS.filter((q) => q.axis === currentAxis.key);
@@ -120,6 +184,19 @@ const MPScoring = ({ onBack }: MPScoringProps) => {
 
     await supabase.from("mp_scoring_results").update({ is_active: false }).eq("user_id", user.id).eq("project_id", selectedProject);
 
+    const forces: string[] = [];
+    const faiblesses: string[] = [];
+    const recommandations: string[] = [];
+
+    AXES.forEach(axis => {
+      const pct = (scores[axis.key] / axis.max) * 100;
+      if (pct >= 70) forces.push(`${axis.label} : solide (${scores[axis.key]}/${axis.max})`);
+      else if (pct < 40) {
+        faiblesses.push(`${axis.label} : à renforcer (${scores[axis.key]}/${axis.max})`);
+        recommandations.push(`Améliorer votre ${axis.label.toLowerCase()}`);
+      }
+    });
+
     const { error } = await supabase.from("mp_scoring_results").insert({
       user_id: user.id,
       project_id: selectedProject,
@@ -131,6 +208,9 @@ const MPScoring = ({ onBack }: MPScoringProps) => {
       score_global: scores.global,
       niveau,
       answers,
+      forces,
+      faiblesses,
+      recommandations,
       is_active: true,
     });
 
@@ -140,8 +220,8 @@ const MPScoring = ({ onBack }: MPScoringProps) => {
     } else {
       await supabase.from("notifications").insert({
         user_id: user.id,
-        title: "📊 Score calculé",
-        message: `Votre MIPROJET SCORE est de ${scores.global}/100 (${getNiveauLabel(niveau)})`,
+        title: "📊 MIPROJET SCORE calculé",
+        message: `Score : ${scores.global}/100 – ${getNiveauLabel(niveau)}. ${scoringType === "startup" ? "Parcours Startup" : "Parcours Activité existante"}`,
         type: "scoring",
         link: "/miprojet-plus/app",
       });
@@ -152,6 +232,7 @@ const MPScoring = ({ onBack }: MPScoringProps) => {
         niveau,
         scores: { juridique: scores.juridique, financier: scores.financier, technique: scores.technique, marche: scores.marche, impact: scores.impact },
         projectTitle,
+        scoringType,
       });
       setShowResultPopup(true);
       setShowResults(true);
@@ -180,6 +261,7 @@ const MPScoring = ({ onBack }: MPScoringProps) => {
     }
   };
 
+  // ===== RESULTS VIEW =====
   if (showResults || (existingResults.length > 0 && answeredCount === 0)) {
     const scores = showResults ? calculateScores() : null;
     const result = showResults
@@ -188,7 +270,6 @@ const MPScoring = ({ onBack }: MPScoringProps) => {
 
     return (
       <div className="space-y-6">
-        {/* Result Popup */}
         {showResultPopup && lastScoreResult && user && (
           <ScoringResultPopup
             open={showResultPopup}
@@ -208,7 +289,7 @@ const MPScoring = ({ onBack }: MPScoringProps) => {
             <Button variant="outline" size="sm" onClick={handleExportPDF}>
               <Download className="h-4 w-4 mr-1" /> PDF
             </Button>
-            <Button variant="outline" size="sm" onClick={() => { setShowResults(false); setAnswers({}); setCurrentAxisIdx(0); }}>
+            <Button variant="outline" size="sm" onClick={() => { setShowResults(false); setAnswers({}); setCurrentAxisIdx(0); setScoringType(null); }}>
               Nouvelle évaluation
             </Button>
           </div>
@@ -231,9 +312,7 @@ const MPScoring = ({ onBack }: MPScoringProps) => {
             return (
               <Card key={axis.key} className="border-0 shadow-sm">
                 <CardContent className="p-4 text-center">
-                  <div className={`w-10 h-10 rounded-full ${axis.color} mx-auto mb-2 flex items-center justify-center text-white font-bold text-sm`}>
-                    {score}
-                  </div>
+                  <div className={`w-10 h-10 rounded-full ${axis.color} mx-auto mb-2 flex items-center justify-center text-white font-bold text-sm`}>{score}</div>
                   <p className="text-xs text-muted-foreground font-medium">{axis.label}</p>
                   <p className="text-[10px] text-muted-foreground/60">max {axis.max}</p>
                 </CardContent>
@@ -244,7 +323,7 @@ const MPScoring = ({ onBack }: MPScoringProps) => {
 
         {existingResults.length > 1 && (
           <Card className="border-0 shadow-sm">
-            <CardHeader className="pb-2"><CardTitle className="text-sm">Historique</CardTitle></CardHeader>
+            <CardHeader className="pb-2"><CardTitle className="text-sm">Historique des évaluations</CardTitle></CardHeader>
             <CardContent>
               <div className="space-y-2">
                 {existingResults.slice(0, 5).map((r: any) => (
@@ -261,6 +340,7 @@ const MPScoring = ({ onBack }: MPScoringProps) => {
     );
   }
 
+  // ===== EVALUATION FORM =====
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-bold">MIPROJET SCORE – Évaluation</h2>
@@ -280,13 +360,38 @@ const MPScoring = ({ onBack }: MPScoringProps) => {
             <Select value={selectedProject} onValueChange={setSelectedProject}>
               <SelectTrigger><SelectValue placeholder="Sélectionnez un projet" /></SelectTrigger>
               <SelectContent>
-                {projects.map((p) => (<SelectItem key={p.id} value={p.id}>{p.title}</SelectItem>))}
+                {projects.map((p) => (
+                  <SelectItem key={p.id} value={p.id}>
+                    {p.title} {p.activity_type === "startup" ? "🚀" : "🏢"}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
-          {selectedProject && (
+          {selectedProject && scoringType && (
             <>
+              {/* Scoring type indicator */}
+              <Card className={`border-0 shadow-sm ${scoringType === "startup" ? "bg-purple-50" : "bg-blue-50"}`}>
+                <CardContent className="p-4 flex items-center gap-3">
+                  <span className="text-2xl">{scoringType === "startup" ? "🚀" : "🏢"}</span>
+                  <div>
+                    <p className="font-semibold text-sm">
+                      {scoringType === "startup" ? "Parcours Startup / Projet en création" : "Parcours Activité existante (PME / Micro-activité)"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {scoringType === "startup"
+                        ? "Évaluation basée sur les prévisions, la cohérence du modèle et le potentiel"
+                        : "Évaluation basée sur les données réelles, l'historique et la performance"
+                      }
+                    </p>
+                  </div>
+                  <Button variant="ghost" size="sm" className="ml-auto text-xs" onClick={() => setScoringType(scoringType === "startup" ? "activite" : "startup")}>
+                    Changer
+                  </Button>
+                </CardContent>
+              </Card>
+
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Progression</span>
